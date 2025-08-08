@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+
+
+
+.MuiSnackbarContent-root.MuiSnackbarContent-variantSuccess {
+    background-color: #43a047 !important;
+    /* ✅ Material green */
+}
