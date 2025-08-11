@@ -27,7 +27,14 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
+    // clearAuthState: (state) => {
+    //   state.error = null;
+    //   state.message = null;
+    // },
     clearAuthState: (state) => {
+      state.token = null;
+      state.user = null;
+      state.loading = false;
       state.error = null;
       state.message = null;
     },
@@ -36,6 +43,8 @@ const authSlice = createSlice({
       state.token = null;
       localStorage.removeItem("token");
       localStorage.removeItem("user");
+      localStorage.removeItem("profileImageUrl");
+      localStorage.removeItem("following")
     },
   },
   extraReducers: (builder) => {

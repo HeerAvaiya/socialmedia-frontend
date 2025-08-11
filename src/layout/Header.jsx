@@ -4,6 +4,7 @@ import {
   getUserMe,
   uploadProfileImage,
   deleteProfileImage,
+  getFollowRequests,
 } from "../store/actions/user.action";
 
 import IconButton from "@mui/material/IconButton";
@@ -11,9 +12,10 @@ import CircularProgress from "@mui/material/CircularProgress";
 import PersonIcon from "@mui/icons-material/Person";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import { useNavigate } from "react-router-dom";
-
-import { clearAuthState } from "../store/reducers/auth.reducer"; // ✅ Import clearAuthState
+import { useNavigate, Link } from "react-router-dom";
+import { clearAuthState } from "../store/reducers/auth.reducer";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import Badge from "@mui/material/Badge";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -25,24 +27,34 @@ const Header = () => {
 
   const { token } = useSelector((state) => state.auth);
   const { user } = useSelector((state) => state.user);
+  const { followRequests } = useSelector((state) => state.user);
 
   useEffect(() => {
     const savedImage = localStorage.getItem("profileImageUrl");
-    if (savedImage) {
-      setLocalImage(savedImage);
-    }
+    if (savedImage) setLocalImage(savedImage);
   }, []);
 
   useEffect(() => {
     if (user?.profileImageUrl) {
-      localStorage.setItem("profileImageUrl", user.profileImageUrl);
-      setLocalImage(user.profileImageUrl);
+      const current = localStorage.getItem("profileImageUrl");
+      if (current !== user.profileImageUrl) {
+        localStorage.setItem("profileImageUrl", user.profileImageUrl);
+        setLocalImage(user.profileImageUrl);
+      }
     }
   }, [user?.profileImageUrl]);
 
   useEffect(() => {
-    if (token) dispatch(getUserMe());
-  }, [dispatch, token]);
+    if (token && !user?.id) {
+      dispatch(getUserMe());
+    }
+  }, [dispatch, token, user?.id]);
+
+  useEffect(() => {
+    if (user?.id) {
+      dispatch(getFollowRequests());
+    }
+  }, [dispatch, user?.id]);
 
   const handleImageClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -86,72 +98,99 @@ const Header = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     localStorage.removeItem("profileImageUrl");
+    localStorage.removeItem("following")
+
+    setLocalImage(null);
 
     dispatch(clearAuthState());
-
     handleClose();
-    navigate("/login");
+    // navigate("/login");
   };
 
   const imageUrl = user?.profileImageUrl || localImage;
+  const pendingRequestCount = followRequests?.length || 0;
+
 
   return (
-    <header
-      style={{
-        display: "flex",
-        justifyContent: "flex-end",
-        alignItems: "center",
-        padding: "1rem",
-      }}
-    >
-      <input
-        type="file"
-        ref={fileInputRef}
-        style={{ display: "none" }}
-        onChange={handleImageChange}
-        accept="image/*"
-      />
+    <header className="bg-white border-b border-gray-300 sticky top-0 z-50">
+      <div className="max-w-[1500px] mx-auto flex items-center justify-between px-4 py-2">
 
-      <IconButton
-        onClick={handleImageClick}
-        onContextMenu={handleDeleteImage}
-        sx={{
-          padding: '0 !important',
-          bgcolor: "#00BFA5",
-          color: "#000",
-          "&:hover": { bgcolor: "#00A18D" },
-          width: "40px",
-          height: "40px",
-        }}
-      >
-        {loading ? (
-          <CircularProgress size={20} sx={{ color: "#000" }} />
-        ) : imageUrl ? (
-          <img
-            src={imageUrl}
-            alt="profile"
-            style={{
-              width: "100%",
-              height: "100%",
-              borderRadius: "50%",
-              objectFit: "cover",
-            }}
+        <Link to="/" className="text-3xl font-bold font-cursive text-pink-600 select-none">
+          Instagram
+        </Link>
+
+        <nav className="flex space-x-8 text-lg font-semibold text-gray-700">
+          <Link
+            to="/"
+            className="hover:text-pink-600 transition-colors duration-200"
+          >
+            Home
+          </Link>
+          <Link
+            to="/discover"
+            className="hover:text-pink-600 transition-colors duration-200"
+          >
+            Discover
+          </Link>
+
+          <Link
+            to="/follow-requests"
+            className="hover:text-pink-600 transition-colors duration-200 relative"
+            title="Follow Requests"
+          >
+            <Badge badgeContent={pendingRequestCount} color="error">
+              <FavoriteBorderIcon fontSize="medium" />
+            </Badge>
+          </Link>
+        </nav>
+
+        <div>
+          <input
+            type="file"
+            ref={fileInputRef}
+            className="hidden"
+            onChange={handleImageChange}
+            accept="image/*"
           />
-        ) : (
-          <PersonIcon />
-        )}
-      </IconButton>
 
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleClose}
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        transformOrigin={{ vertical: "top", horizontal: "right" }}
-      >
-        <MenuItem onClick={handleProfile}>Profile</MenuItem>
-        <MenuItem onClick={handleLogout}>Logout</MenuItem>
-      </Menu>
+          <IconButton
+            onClick={handleImageClick}
+            onContextMenu={handleDeleteImage}
+            sx={{
+              padding: "0 !important",
+              bgcolor: "#ec4899", // pink-500
+              color: "#fff",
+              "&:hover": { bgcolor: "#db2777" }, // pink-700
+              width: "40px",
+              height: "40px",
+            }}
+          >
+            {loading ? (
+              <CircularProgress size={20} sx={{ color: "#fff" }} />
+            ) : imageUrl ? (
+              <img
+                src={imageUrl}
+                alt="profile"
+                className="w-full h-full rounded-full object-cover"
+              />
+            ) : (
+              <PersonIcon />
+            )}
+          </IconButton>
+
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleClose}
+            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+            transformOrigin={{ vertical: "top", horizontal: "right" }}
+          >
+            <MenuItem onClick={handleProfile}>Profile</MenuItem>
+           
+            <MenuItem onClick={handleLogout}>Logout</MenuItem>
+          </Menu>
+        </div>
+      </div>
     </header>
   );
 };

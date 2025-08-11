@@ -4,9 +4,10 @@ import Header from "../layout/Header";
 
 const PrivateRoute = () => {
     const { token, user } = useSelector((state) => state.auth);
+    console.log('PrivateRoute token:', token, 'user:', user);
 
     if (!token || !user) return <Navigate to="/login" replace />;
-    if (!user.username) return <Navigate to="/login" replace />;
+    // if (!user.username) return <Navigate to="/login" replace />;
 
     return (
         <>
@@ -17,3 +18,5 @@ const PrivateRoute = () => {
 };
 
 export default PrivateRoute;
+
+

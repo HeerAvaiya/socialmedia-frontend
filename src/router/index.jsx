@@ -10,6 +10,8 @@ import ResetPassword from "../pages/auth/ResetPasswordPage";
 
 import Home from "../pages/HomePage";
 import Profile from "../views/user/Profile";
+import Discover from "../views/user/Discover";
+import FollowRequests from "../views/user/FollowRequests";
 
 
 const router = createBrowserRouter([
@@ -47,9 +49,17 @@ const router = createBrowserRouter([
                 element: <Home />,
             },
             {
+                path: "/discover",
+                element: <Discover />
+            },
+            {
                 path: "/profile",
                 element: <Profile />
             },
+            {
+                path: "follow-requests",
+                element: <FollowRequests />
+            }
         ],
     },
 ]);

@@ -7,7 +7,6 @@ import { SnackbarUtilsConfigurator , CloseButton } from "./components/common/Toa
 
 import './index.css';
 
-// import {  SnackbarUtilsConfiguration } from './components/common/Toast';
 import { AuthProvider } from './context/AuthContext';
 import { AppProjectProvider } from './context/AppProjectContext';
 
@@ -26,7 +25,6 @@ createRoot(document.getElementById('root')).render(
           anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
           classes={{ containerRoot: 'snackbarProvider' }}
         >
-          {/* <SnackbarUtilsConfiguration /> */}
           <SnackbarUtilsConfigurator />
           <App />
         </SnackbarProvider>
