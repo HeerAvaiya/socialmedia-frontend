@@ -77,11 +77,14 @@ export const unfollowUser = createAsyncThunk("user/unfollowUser", async (userId,
 export const getFollowers = createAsyncThunk("user/getFollowers", async (userId, thunkAPI) => {
   try {
     const res = await axiosClient.get(`/users/${userId}/followers`);
+    console.log("res", res.data.followers)
     return res.data.followers;
+
   } catch (error) {
     return thunkAPI.rejectWithValue(error?.response?.data?.message || "Failed to fetch followers");
   }
 });
+
 
 export const getFollowing = createAsyncThunk("user/getFollowing", async (userId, thunkAPI) => {
   try {

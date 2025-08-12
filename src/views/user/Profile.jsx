@@ -1,6 +1,7 @@
 ////privacy working code , profile detail updating 
 import { useRef, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import FollowersListModal from "./ FollowersListModal";
 import {
     getUserMe,
     getUserPosts,
@@ -25,23 +26,29 @@ const Profile = () => {
     const [showEdit, setShowEdit] = useState(false);
     const [editUsername, setEditUsername] = useState("");
     const [editBio, setEditBio] = useState("");
+    const [modalType, setModalType] = useState(null);
 
     useEffect(() => {
-        if (token && !user?.id) {
+        if (token) {
             dispatch(getUserMe()).then((res) => {
-                if (res?.payload?.id) {
-                    dispatch(getUserPosts(res.payload.id));
-                    dispatch(getFollowers(res.payload.id));
-                    dispatch(getFollowing(res.payload.id));
+                if (res?.payload) {
+                    const { id, profileImageUrl } = res.payload;
 
-                    if (res.payload.profileImageUrl) {
-                        localStorage.setItem("profileImageUrl", res.payload.profileImageUrl);
-                        setLocalImage(res.payload.profileImageUrl);
+                    if (profileImageUrl) {
+                        localStorage.setItem("profileImageUrl", profileImageUrl);
+                        setLocalImage(profileImageUrl);
+                    } else {
+                        localStorage.removeItem("profileImageUrl");
+                        setLocalImage(null);
                     }
+
+                    dispatch(getUserPosts(id));
+                    dispatch(getFollowers(id));
+                    dispatch(getFollowing(id));
                 }
             });
         }
-    }, [dispatch, token, user?.id]);
+    }, [token, dispatch]);
 
     const handleImageChange = async (e) => {
         const file = e.target.files[0];
@@ -63,6 +70,15 @@ const Profile = () => {
         setLoading(false);
         localStorage.removeItem("profileImageUrl");
         setLocalImage(null);
+    };
+
+    const handleOpenModal = (type) => {
+        if (type === "followers") {
+            dispatch(getFollowers(user.id));
+        } else {
+            dispatch(getFollowing(user.id));
+        }
+        setModalType(type);
     };
 
     const handleEditClick = () => {
@@ -126,26 +142,42 @@ const Profile = () => {
                 </div>
             </div>
 
+
             <div className="flex justify-between mt-6 text-center">
                 <div>
                     <p className="text-lg font-bold">{posts?.length || 0}</p>
                     <p className="text-sm">Posts</p>
                 </div>
-                <div>
+                <div
+                    className="cursor-pointer"
+                    onClick={() => handleOpenModal("followers")}
+                >
                     <p className="text-lg font-bold">{followers?.length || 0}</p>
                     <p className="text-sm">Followers</p>
                 </div>
-                <div>
+                <div
+                    className="cursor-pointer"
+                    onClick={() => handleOpenModal("following")}
+                >
                     <p className="text-lg font-bold">{following?.length || 0}</p>
                     <p className="text-sm">Following</p>
                 </div>
             </div>
 
+
+            {modalType && (
+                <FollowersListModal
+                    type={modalType}
+                    onClose={() => setModalType(null)}
+                />
+            )}
+
+
             {showEdit && (
                 <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
                     <div className="bg-white rounded-lg p-6 w-80">
                         <h3 className="text-lg font-bold mb-4">Edit Profile</h3>
-                           <div className="mt-2 mb-4 flex items-center gap-6">
+                        <div className="mt-2 mb-4 flex items-center gap-6">
                             <label className="text-sm font-medium">
                                 <span className="font-semibold">
                                     {user?.isPrivate ? "Private" : "Public"}
@@ -176,7 +208,7 @@ const Profile = () => {
                                 rows={3}
                             />
                         </div>
-                     
+
                         <div className="flex justify-end gap-2 mt-4">
                             <button
                                 onClick={() => setShowEdit(false)}

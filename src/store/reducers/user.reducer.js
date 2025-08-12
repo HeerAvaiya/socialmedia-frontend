@@ -105,7 +105,7 @@ const userSlice = createSlice({
         state.message = action.payload.status;
       })
 
-      
+
 
       .addCase(acceptFollowRequest.fulfilled, (state, action) => {
         state.message = "Follow request accepted";

@@ -43,6 +43,7 @@ const Header = () => {
       }
     }
   }, [user?.profileImageUrl]);
+  
 
   useEffect(() => {
     if (token && !user?.id) {
@@ -104,10 +105,11 @@ const Header = () => {
 
     dispatch(clearAuthState());
     handleClose();
-    // navigate("/login");
   };
 
+
   const imageUrl = user?.profileImageUrl || localImage;
+
   const pendingRequestCount = followRequests?.length || 0;
 
 
@@ -186,7 +188,7 @@ const Header = () => {
             transformOrigin={{ vertical: "top", horizontal: "right" }}
           >
             <MenuItem onClick={handleProfile}>Profile</MenuItem>
-           
+
             <MenuItem onClick={handleLogout}>Logout</MenuItem>
           </Menu>
         </div>
