@@ -12,6 +12,8 @@ import Home from "../pages/HomePage";
 import Profile from "../views/user/Profile";
 import Discover from "../views/user/Discover";
 import FollowRequests from "../views/user/FollowRequests";
+import AddPost from "../pages/post/AddPostPage";
+import PostCard from "../pages/post/PostCardPage";
 
 
 const router = createBrowserRouter([
@@ -59,7 +61,11 @@ const router = createBrowserRouter([
             {
                 path: "follow-requests",
                 element: <FollowRequests />
-            }
+            },
+            {
+                path: "add-post",
+                element: <AddPost />
+            },
         ],
     },
 ]);

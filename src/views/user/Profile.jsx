@@ -1,22 +1,23 @@
-////privacy working code , profile detail updating 
 import { useRef, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import FollowersListModal from "./ FollowersListModal";
 import {
     getUserMe,
-    getUserPosts,
     getFollowers,
     getFollowing,
     uploadProfileImage,
     deleteProfileImage,
     updateUser,
 } from "../../store/actions/user.action";
+import { getUserPosts, updatePostImage, deletePost } from "../../store/actions/post.action";
+import PostCard from "../../views/post/PostCard";
 import { HiDotsVertical } from "react-icons/hi";
 
 const Profile = () => {
     const dispatch = useDispatch();
     const fileInputRef = useRef(null);
-    const { user, posts, followers, following } = useSelector((state) => state.user);
+    const { user, followers, following } = useSelector((state) => state.user);
+    const { userPosts } = useSelector((state) => state.post);
     const { token } = useSelector((state) => state.auth);
 
     const [localImage, setLocalImage] = useState(() => {
@@ -98,10 +99,15 @@ const Profile = () => {
         await dispatch(updateUser({ isPrivate: updatedPrivacy }));
     };
 
+    useEffect(() => {
+        console.log("Updated userPosts 👉", userPosts);
+    }, [userPosts]);
+
     const imageUrl = user?.profileImageUrl || localImage || "/default.png";
 
     return (
         <div className="p-4 max-w-xl mx-auto">
+            {/* --- Profile Header --- */}
             <div className="flex items-center gap-4">
                 <div className="relative">
                     <img
@@ -142,10 +148,11 @@ const Profile = () => {
                 </div>
             </div>
 
-
+            {/* --- Counts --- */}
             <div className="flex justify-between mt-6 text-center">
                 <div>
-                    <p className="text-lg font-bold">{posts?.length || 0}</p>
+                    {/* <p className="text-lg font-bold">{posts?.length || 0}</p> */}
+                    <p className="text-lg font-bold">{userPosts?.length || 0}</p>
                     <p className="text-sm">Posts</p>
                 </div>
                 <div
@@ -164,7 +171,7 @@ const Profile = () => {
                 </div>
             </div>
 
-
+            {/* Followers / Following Modal */}
             {modalType && (
                 <FollowersListModal
                     type={modalType}
@@ -172,7 +179,7 @@ const Profile = () => {
                 />
             )}
 
-
+            {/* Edit Modal */}
             {showEdit && (
                 <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
                     <div className="bg-white rounded-lg p-6 w-80">
@@ -226,8 +233,20 @@ const Profile = () => {
                     </div>
                 </div>
             )}
+
+            <div className="mt-8">
+                {userPosts && userPosts.length > 0 ? (
+                    <div className="grid grid-cols-3 gap-2">
+                        {userPosts.map((post) => (
+                            <PostCard key={post.id} post={post} />
+                        ))}
+                    </div>
+                ) : (
+                    <p className="text-gray-500 text-sm">No posts yet</p>
+                )}
+            </div>
         </div>
     );
 };
 
-export default Profile;
+export default Profile; 

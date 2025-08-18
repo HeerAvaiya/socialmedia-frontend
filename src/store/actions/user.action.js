@@ -37,14 +37,15 @@ export const deleteProfileImage = createAsyncThunk("user/deleteProfileImage", as
   }
 });
 
-export const getUserPosts = createAsyncThunk("user/getUserPosts", async (userId, thunkAPI) => {
-  try {
-    const res = await axiosClient.get(`/posts/user/${userId}`);
-    return res.data.posts;
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error?.response?.data?.message || "Failed to fetch posts");
-  }
-});
+
+// export const getUserPosts = createAsyncThunk("user/getUserPosts", async (userId, thunkAPI) => {
+//   try {
+//     const res = await axiosClient.get(`/posts/user/${userId}`);
+//     return res.data.posts;
+//   } catch (error) {
+//     return thunkAPI.rejectWithValue(error?.response?.data?.message || "Failed to fetch posts");
+//   }
+// });
 
 export const getDiscoverUsers = createAsyncThunk("user/getDiscoverUsers", async (_, thunkAPI) => {
   try {
@@ -74,16 +75,26 @@ export const unfollowUser = createAsyncThunk("user/unfollowUser", async (userId,
   }
 });
 
-export const getFollowers = createAsyncThunk("user/getFollowers", async (userId, thunkAPI) => {
-  try {
-    const res = await axiosClient.get(`/users/${userId}/followers`);
-    console.log("res", res.data.followers)
-    return res.data.followers;
 
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error?.response?.data?.message || "Failed to fetch followers");
+export const getFollowers = createAsyncThunk(
+  "user/getFollowers",
+  async (userId, thunkAPI) => {
+    try {
+      const res = await axiosClient.get(`/users/${userId}/followers`);
+      console.log("res", res.data.followers);
+
+      const followersArray = Array.isArray(res.data.followers)
+        ? res.data.followers
+        : Object.values(res.data.followers);
+
+      return followersArray;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error?.response?.data?.message || "Failed to fetch followers"
+      );
+    }
   }
-});
+);
 
 
 export const getFollowing = createAsyncThunk("user/getFollowing", async (userId, thunkAPI) => {
@@ -100,8 +111,8 @@ export const getFollowRequests = createAsyncThunk(
   "user/getFollowRequests",
   async (_, thunkAPI) => {
     try {
-      const res = await axiosClient.get("/users/follow-requests"); // backend route to get pending requests
-      return res.data.requests; // adjust if your backend returns differently
+      const res = await axiosClient.get("/users/follow-requests"); 
+      return res.data.requests; 
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error?.response?.data?.message || "Failed to fetch follow requests"

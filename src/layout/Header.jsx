@@ -15,6 +15,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { useNavigate, Link } from "react-router-dom";
 import { clearAuthState } from "../store/reducers/auth.reducer";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import AddBoxIcon from "@mui/icons-material/AddBox"; // + icon import
 import Badge from "@mui/material/Badge";
 
 const Header = () => {
@@ -26,8 +27,7 @@ const Header = () => {
   const [localImage, setLocalImage] = useState(null);
 
   const { token } = useSelector((state) => state.auth);
-  const { user } = useSelector((state) => state.user);
-  const { followRequests } = useSelector((state) => state.user);
+  const { user, followRequests } = useSelector((state) => state.user);
 
   useEffect(() => {
     const savedImage = localStorage.getItem("profileImageUrl");
@@ -43,7 +43,6 @@ const Header = () => {
       }
     }
   }, [user?.profileImageUrl]);
-  
 
   useEffect(() => {
     if (token && !user?.id) {
@@ -61,9 +60,7 @@ const Header = () => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  const handleClose = () => setAnchorEl(null);
 
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
@@ -99,29 +96,26 @@ const Header = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     localStorage.removeItem("profileImageUrl");
-    localStorage.removeItem("following")
-
+    localStorage.removeItem("following");
     setLocalImage(null);
-
     dispatch(clearAuthState());
     handleClose();
   };
 
-
   const imageUrl = user?.profileImageUrl || localImage;
-
   const pendingRequestCount = followRequests?.length || 0;
-
 
   return (
     <header className="bg-white border-b border-gray-300 sticky top-0 z-50">
       <div className="max-w-[1500px] mx-auto flex items-center justify-between px-4 py-2">
-
-        <Link to="/" className="text-3xl font-bold font-cursive text-pink-600 select-none">
+        <Link
+          to="/"
+          className="text-3xl font-bold font-cursive text-pink-600 select-none"
+        >
           Instagram
         </Link>
 
-        <nav className="flex space-x-8 text-lg font-semibold text-gray-700">
+        <nav className="flex space-x-8 text-lg font-semibold text-gray-700 items-center">
           <Link
             to="/"
             className="hover:text-pink-600 transition-colors duration-200"
@@ -144,6 +138,14 @@ const Header = () => {
               <FavoriteBorderIcon fontSize="medium" />
             </Badge>
           </Link>
+
+          <IconButton
+            onClick={() => navigate("/add-post")}
+            sx={{ color: "#ec4899" }} // pink-500
+            title="Create Post"
+          >
+            <AddBoxIcon fontSize="medium" />
+          </IconButton>
         </nav>
 
         <div>
@@ -160,9 +162,9 @@ const Header = () => {
             onContextMenu={handleDeleteImage}
             sx={{
               padding: "0 !important",
-              bgcolor: "#ec4899", // pink-500
+              bgcolor: "#ec4899",
               color: "#fff",
-              "&:hover": { bgcolor: "#db2777" }, // pink-700
+              "&:hover": { bgcolor: "#db2777" },
               width: "40px",
               height: "40px",
             }}
@@ -188,7 +190,6 @@ const Header = () => {
             transformOrigin={{ vertical: "top", horizontal: "right" }}
           >
             <MenuItem onClick={handleProfile}>Profile</MenuItem>
-
             <MenuItem onClick={handleLogout}>Logout</MenuItem>
           </Menu>
         </div>

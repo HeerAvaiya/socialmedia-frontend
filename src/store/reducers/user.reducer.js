@@ -4,7 +4,7 @@ import {
   updateUser,
   uploadProfileImage,
   deleteProfileImage,
-  getUserPosts,
+  // getUserPosts,
   getDiscoverUsers,
   sendFollowRequest,
   acceptFollowRequest,
@@ -80,9 +80,9 @@ const userSlice = createSlice({
         state.message = "Profile image deleted successfully";
       })
 
-      .addCase(getUserPosts.fulfilled, (state, action) => {
-        state.posts = action.payload;
-      })
+      // .addCase(getUserPosts.fulfilled, (state, action) => {
+      //   state.posts = action.payload;
+      // })
 
 
       .addCase(getDiscoverUsers.pending, (state) => {
