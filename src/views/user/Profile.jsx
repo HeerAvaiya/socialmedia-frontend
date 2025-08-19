@@ -106,7 +106,7 @@ const Profile = () => {
     const imageUrl = user?.profileImageUrl || localImage || "/default.png";
 
     return (
-        <div className="p-4 max-w-xl mx-auto">
+        <div className="p-4 max-w-lg mx-auto">
             {/* --- Profile Header --- */}
             <div className="flex items-center gap-4">
                 <div className="relative">
@@ -234,9 +234,9 @@ const Profile = () => {
                 </div>
             )}
 
-            <div className="mt-8">
+            <div className="mt-12">
                 {userPosts && userPosts.length > 0 ? (
-                    <div className="grid grid-cols-3 gap-2">
+                    <div className="grid grid-cols-2 gap-5">
                         {userPosts.map((post) => (
                             <PostCard key={post.id} post={post} />
                         ))}

@@ -38,23 +38,34 @@ export const deleteProfileImage = createAsyncThunk("user/deleteProfileImage", as
 });
 
 
-// export const getUserPosts = createAsyncThunk("user/getUserPosts", async (userId, thunkAPI) => {
+
+////working without searchbar
+// export const getDiscoverUsers = createAsyncThunk("user/getDiscoverUsers", async (_, thunkAPI) => {
 //   try {
-//     const res = await axiosClient.get(`/posts/user/${userId}`);
-//     return res.data.posts;
+//     const res = await axiosClient.get("/users/discover");
+//     return res.data.users || res.data; // adjust based on backend response
 //   } catch (error) {
-//     return thunkAPI.rejectWithValue(error?.response?.data?.message || "Failed to fetch posts");
+//     return thunkAPI.rejectWithValue(error?.response?.data?.message || "Failed to fetch discover users");
 //   }
 // });
 
-export const getDiscoverUsers = createAsyncThunk("user/getDiscoverUsers", async (_, thunkAPI) => {
-  try {
-    const res = await axiosClient.get("/users/discover");
-    return res.data.users || res.data; // adjust based on backend response
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error?.response?.data?.message || "Failed to fetch discover users");
+
+////working with searchbar
+export const getDiscoverUsers = createAsyncThunk(
+  "user/getDiscoverUsers",
+  async (search = "", thunkAPI) => {
+    try {
+      const res = await axiosClient.get("/users/discover", {
+        params: { search },
+      });
+      return res.data.users || res.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error?.response?.data?.message || "Failed to fetch discover users"
+      );
+    }
   }
-});
+);
 
 
 export const sendFollowRequest = createAsyncThunk("user/sendFollowRequest", async (userId, thunkAPI) => {
@@ -111,8 +122,8 @@ export const getFollowRequests = createAsyncThunk(
   "user/getFollowRequests",
   async (_, thunkAPI) => {
     try {
-      const res = await axiosClient.get("/users/follow-requests"); 
-      return res.data.requests; 
+      const res = await axiosClient.get("/users/follow-requests");
+      return res.data.requests;
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error?.response?.data?.message || "Failed to fetch follow requests"

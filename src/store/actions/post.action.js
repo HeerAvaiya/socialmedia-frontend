@@ -36,7 +36,7 @@ export const getUserPosts = createAsyncThunk(
     async (userId, thunkAPI) => {
         try {
             const res = await axiosClient.get(`/posts/user/${userId}`);
-            return res.data.data; 
+            return res.data.data;
         } catch (error) {
             return thunkAPI.rejectWithValue(
                 error?.response?.data?.message || "Failed to fetch user posts"
@@ -50,7 +50,7 @@ export const getPostDetail = createAsyncThunk(
     async (postId, thunkAPI) => {
         try {
             const res = await axiosClient.get(`/posts/${postId}`);
-            return res.data.data; 
+            return res.data.data;
         } catch (error) {
             return thunkAPI.rejectWithValue(
                 error?.response?.data?.message || "Failed to fetch post detail"
@@ -67,7 +67,7 @@ export const updatePostImage = createAsyncThunk(
             const res = await axiosClient.put(`/posts/${postId}/image`, formData, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
-            return res.data.post; 
+            return res.data.post;
         } catch (error) {
             return thunkAPI.rejectWithValue(
                 error?.response?.data?.error || "Failed to update post"
@@ -82,7 +82,7 @@ export const deletePost = createAsyncThunk(
     async (postId, thunkAPI) => {
         try {
             await axiosClient.delete(`/posts/${postId}`);
-            return postId; 
+            return postId;
         } catch (error) {
             return thunkAPI.rejectWithValue(
                 error?.response?.data?.error || "Failed to delete post"
@@ -165,27 +165,12 @@ export const getPostComments = createAsyncThunk(
 );
 
 
-// export const getFeedPosts = createAsyncThunk(
-//     "post/getFeed",
-//     async (_, thunkAPI) => {
-//         try {
-//             const res = await axiosClient.get("/posts/feed");
-//             return res.data.data;
-//         } catch (error) {
-//             return thunkAPI.rejectWithValue(
-//                 error?.response?.data?.message || "Failed to fetch feed"
-//             );
-//         }
-//     }
-// );
-
-
 export const getFeedPosts = createAsyncThunk(
     "post/getFeedPosts",
     async (_, { rejectWithValue }) => {
         try {
-            const { data } = await axiosClient.get("/posts/feed");  // 👈 aa route backend ma exist kare che?
-            return data.posts;   // 👈 khyal rakho data.posts return thavu joiye
+            const { data } = await axiosClient.get("/posts/feed");
+            return data.data;
         } catch (error) {
             return rejectWithValue(error.response.data.message);
         }

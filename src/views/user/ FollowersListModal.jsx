@@ -1,4 +1,4 @@
- import React, { useMemo } from "react";
+import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -75,18 +75,6 @@ const FollowersListModal = ({ type, onClose }) => {
                                                 ) : null}
                                             </div>
                                         </div>
-
-                                        {/* Right side */}
-                                        {uid === (authUser?.id || authUser?._id) ? (
-                                            <span className="text-xs px-3 py-1 rounded-md border text-gray-600">You</span>
-                                        ) : (
-                                            <button
-                                                onClick={() => handleGoProfile(u)}
-                                                className="text-sm font-semibold text-blue-500 px-3 py-1 rounded-md hover:bg-blue-50"
-                                            >
-                                                View
-                                            </button>
-                                        )}
                                     </li>
                                 );
                             })}
