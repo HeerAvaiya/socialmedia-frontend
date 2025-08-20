@@ -35,7 +35,7 @@ const Register = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         dispatch(registerAction(formData));
-        Toast.success("Registration successful!")
+        // Toast.success("Registration successful!")
     };
 
     if (loading) return <Loader />;

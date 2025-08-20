@@ -238,7 +238,7 @@ const Profile = () => {
                 {userPosts && userPosts.length > 0 ? (
                     <div className="grid grid-cols-2 gap-5">
                         {userPosts.map((post) => (
-                            <PostCard key={post.id} post={post} />
+                            <PostCard imgClass="h-40" key={post.id} post={post} />
                         ))}
                     </div>
                 ) : (

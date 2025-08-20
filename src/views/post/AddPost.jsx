@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createPost } from "../../store/actions/post.action";
+import Toast from "../../components/common/Toast";
 
 const AddPost = () => {
     const dispatch = useDispatch();
-    const { loading } = useSelector((state) => state.post);
+    const { loading, message, error } = useSelector((state) => state.post);
 
     const [caption, setCaption] = useState("");
     const [image, setImage] = useState(null);
@@ -16,7 +17,7 @@ const AddPost = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!caption || !image) {
-            alert("Caption and Image are required!");
+            Toast.warning("Caption and Image are required!");
             return;
         }
 
@@ -25,9 +26,21 @@ const AddPost = () => {
         formData.append("image", image);
 
         dispatch(createPost(formData));
-        setCaption("");
-        setImage(null);
     };
+
+    useEffect(() => {
+        if (message) {
+            Toast.success(message);
+            setCaption("");
+            setImage(null);
+        }
+    }, [message]);
+
+    useEffect(() => {
+        if (error) {
+            Toast.error(error);
+        }
+    }, [error]);
 
     return (
         <div className="p-6 max-w-md mx-auto">

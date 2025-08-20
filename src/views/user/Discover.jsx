@@ -14,12 +14,12 @@ const Discover = () => {
     const [debouncedSearch, setDebouncedSearch] = useState("");
 
     const [currentPage, setCurrentPage] = useState(1);
-    const usersPerPage = 7;
+    const usersPerPage = 6;
 
     useEffect(() => {
         const handler = setTimeout(() => {
             setDebouncedSearch(search);
-            setCurrentPage(1); 
+            setCurrentPage(1);
         }, 500);
         return () => clearTimeout(handler);
     }, [search]);
@@ -73,7 +73,7 @@ const Discover = () => {
 
     return (
         <div className="p-6 max-w-md mx-auto">
-            <h1 className="text-2xl font-bold mb-6 text-center">Discover Users</h1>
+            <h1 className="text-2xl font-bold mb-6 text-center">Search Users</h1>
 
             {/* Search bar */}
             <input

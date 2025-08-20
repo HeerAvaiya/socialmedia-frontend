@@ -1,22 +1,19 @@
 import { useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
-import Header from "../layout/Header";
+import Sidebar from "../layout/Sidebar";
 
 const PrivateRoute = () => {
     const { token, user } = useSelector((state) => state.auth);
     console.log('PrivateRoute token:', token, 'user:', user);
 
     if (!token || !user) return <Navigate to="/login" replace />;
-    // if (!user.username) return <Navigate to="/login" replace />;
 
     return (
         <>
-            <Header />
+            <Sidebar />
             <Outlet />
         </>
     );
 };
 
 export default PrivateRoute;
-
-

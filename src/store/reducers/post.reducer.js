@@ -121,12 +121,11 @@ const postSlice = createSlice({
             })
 
 
-        
             // toggleLike
             .addCase(toggleLike.pending, (state) => {
                 // state.loading = true;
             })
-           
+
             .addCase(toggleLike.fulfilled, (state, action) => {
                 const updatedPost = action.payload;
                 const feedIndex = state.feedPosts.findIndex(p => p.id === updatedPost.id);
@@ -155,7 +154,7 @@ const postSlice = createSlice({
                 // state.loading = true;
             })
 
-        
+
             .addCase(getPostLikes.fulfilled, (state, action) => {
                 state.loading = false;
                 const { postId, users } = action.payload;
@@ -188,17 +187,16 @@ const postSlice = createSlice({
 
             .addCase(createComment.fulfilled, (state, action) => {
                 const { postId, comment } = action.payload;
-                const updateComments = (post) => {
+                const touch = (post) => {
                     if (post) {
                         if (!post.comments) post.comments = [];
                         post.comments.push(comment);
-                        post.commentsCount = (post.commentsCount || 0) + 1;
+                        post.commentCount = (post.commentCount || 0) + 1;
                     }
                 };
-                updateComments(state.posts.find((p) => p.id === postId));
-                updateComments(state.userPosts.find((p) => p.id === postId));
-                updateComments(state.feedPosts.find((p) => p.id === postId));
-                state.message = "Comment added successfully";
+                touch(state.posts.find(p => p.id === postId));
+                touch(state.userPosts.find(p => p.id === postId));
+                touch(state.feedPosts.find(p => p.id === postId));
             })
 
 
@@ -241,20 +239,20 @@ const postSlice = createSlice({
                 // state.loading = true;
             })
 
+         
             .addCase(deleteComment.fulfilled, (state, action) => {
                 const { id, postId } = action.payload;
-
-                const deleteFrom = (post) => {
+                const drop = (post) => {
                     if (post && post.comments) {
-                        post.comments = post.comments.filter((c) => c.id !== id);
+                        post.comments = post.comments.filter(c => c.id !== id);
                         post.commentCount = Math.max((post.commentCount || 1) - 1, 0);
                     }
                 };
-                deleteFrom(state.posts.find((p) => p.id === postId));
-                deleteFrom(state.userPosts.find((p) => p.id === postId));
-                deleteFrom(state.feedPosts.find((p) => p.id === postId));
-                state.loading = false;
+                drop(state.posts.find(p => p.id === postId));
+                drop(state.userPosts.find(p => p.id === postId));
+                drop(state.feedPosts.find(p => p.id === postId));
             })
+
 
             .addCase(deleteComment.rejected, (state, action) => {
                 state.loading = false;
@@ -269,18 +267,13 @@ const postSlice = createSlice({
             })
 
             .addCase(getPostComments.fulfilled, (state, action) => {
-                state.loading = false;
                 const { postId, comments } = action.payload;
-                const updateComments = (post) => {
-                    if (post) {
-                        post.comments = comments;
-                    }
-                };
-                updateComments(state.posts.find((p) => p.id === postId));
-                updateComments(state.userPosts.find((p) => p.id === postId));
-                updateComments(state.feedPosts.find((p) => p.id === postId));
-                state.message = "Fetched post comments successfully";
+                const put = (post) => { if (post) post.comments = comments; };
+                put(state.posts.find(p => p.id === postId));
+                put(state.userPosts.find(p => p.id === postId));
+                put(state.feedPosts.find(p => p.id === postId));
             })
+
 
             .addCase(getPostComments.rejected, (state, action) => {
                 state.loading = false;

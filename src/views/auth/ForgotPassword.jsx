@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { forgotPasswordAction } from '../../store/actions/auth.action';
 import Loader from '../../components/common/Loader';
@@ -14,7 +14,15 @@ const ForgotPassword = () => {
         e.preventDefault();
         if (!email.trim()) return;
         dispatch(forgotPasswordAction(email));
-        Toast.success("Reset link sent to your email.");
+        // Toast.success("Reset link sent to your email.");
+        useEffect(() => {
+            if (message) {
+                Toast.success(message);
+            }
+            if (error) {
+                Toast.error(error);
+            }
+        }, [message, error]);
     };
 
     if (loading) return <Loader />;

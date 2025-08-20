@@ -31,10 +31,7 @@ const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    clearUserState: (state) => {
-      state.error = null;
-      state.message = null;
-    },
+    clearUserState: () => initialState,
   },
   extraReducers: (builder) => {
     builder
@@ -57,7 +54,7 @@ const userSlice = createSlice({
       })
       .addCase(updateUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload; // direct update user in state
+        state.user = action.payload; 
         state.message = "Profile updated successfully";
         localStorage.setItem("user", JSON.stringify(action.payload));
       })

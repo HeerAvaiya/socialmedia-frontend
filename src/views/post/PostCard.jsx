@@ -1,6 +1,4 @@
-////full working
-import { useState, useRef, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useState, useRef, useEffect } from "react";import { useDispatch, useSelector } from "react-redux";
 import { HiDotsVertical } from "react-icons/hi";
 import { FaHeart, FaRegHeart, FaRegCommentDots } from "react-icons/fa";
 import { Dialog } from "@headlessui/react";
@@ -15,7 +13,7 @@ import {
     deleteComment,
 } from "../../store/actions/post.action";
 
-const PostCard = ({ post, isFeed = false }) => {
+const PostCard = ({ post, isFeed = false, imgClass = "" }) => {
     const dispatch = useDispatch();
     const { user } = useSelector((state) => state.auth);
 
@@ -40,10 +38,11 @@ const PostCard = ({ post, isFeed = false }) => {
     const [editingText, setEditingText] = useState("");
 
 
-    // Safe access to comments from Redux
-    const postFromRedux = useSelector((state) =>
-        state.post.userPosts?.find((p) => p.id === post.id)
-    );
+    const postFromRedux = useSelector((state) => {
+        const { feedPosts = [], userPosts = [], posts = [] } = state.post || {};
+        const collection = isFeed ? feedPosts : (userPosts?.length ? userPosts : posts);
+        return collection?.find((p) => p.id === post.id) || post;
+    });
 
     const comments = postFromRedux?.comments || [];
 
@@ -146,12 +145,12 @@ const PostCard = ({ post, isFeed = false }) => {
             : post.imageUrl || post.image || post.url || post.photo || "";
 
     return (
-        <div className="relative group border rounded-lg overflow-hidden p-2 bg-white">
+        <div className="relative group border border-[#bfbbbb] border-t-0 rounded-t-none rounded-lg overflow-hidden p-2 bg-white">
             {imageSrc ? (
                 <img
                     src={imageSrc}
                     alt={caption || "Post"}
-                    className="w-full h-40 bg-center rounded"
+                    className={`${imgClass} w-full bg-center rounded`}
                 />
             ) : (
                 <div className="w-full h-40 bg-gray-200 flex items-center justify-center text-gray-500 text-sm">
@@ -211,7 +210,11 @@ const PostCard = ({ post, isFeed = false }) => {
                     className="flex items-center gap-1 text-gray-600 cursor-pointer"
                 >
                     <FaRegCommentDots size={16} />
-                    <span className="text-xs">{post.commentCount || 0}</span>
+
+                    <span className="text-xs">
+                        {postFromRedux?.commentCount ?? post.commentCount ?? 0}
+                    </span>
+
                 </button>
             </div>
 

@@ -107,47 +107,14 @@ const Header = () => {
 
   return (
     <header className="bg-white border-b border-gray-300 sticky top-0 z-50">
-      <div className="max-w-[1500px] mx-auto flex items-center justify-between px-4 py-2">
+      <div className="mx-auto flex items-center justify-between px-4 py-2">
         <Link
           to="/"
-          className="text-3xl font-bold font-cursive text-pink-600 select-none"
+          className="text-3xl font-bold font-cursive select-none"
         >
           Instagram
         </Link>
-
-        <nav className="flex space-x-8 text-lg font-semibold text-gray-700 items-center">
-          <Link
-            to="/"
-            className="hover:text-pink-600 transition-colors duration-200"
-          >
-            Home
-          </Link>
-          <Link
-            to="/discover"
-            className="hover:text-pink-600 transition-colors duration-200"
-          >
-            Discover
-          </Link>
-
-          <Link
-            to="/follow-requests"
-            className="hover:text-pink-600 transition-colors duration-200 relative"
-            title="Follow Requests"
-          >
-            <Badge badgeContent={pendingRequestCount} color="error">
-              <FavoriteBorderIcon fontSize="medium" />
-            </Badge>
-          </Link>
-
-          <IconButton
-            onClick={() => navigate("/add-post")}
-            sx={{ color: "#ec4899" }} // pink-500
-            title="Create Post"
-          >
-            <AddBoxIcon fontSize="medium" />
-          </IconButton>
-        </nav>
-
+        
         <div>
           <input
             type="file"

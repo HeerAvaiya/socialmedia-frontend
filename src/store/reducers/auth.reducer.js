@@ -27,16 +27,13 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    // clearAuthState: (state) => {
-    //   state.error = null;
-    //   state.message = null;
-    // },
     clearAuthState: (state) => {
       state.token = null;
       state.user = null;
       state.loading = false;
       state.error = null;
       state.message = null;
+      state.profileImageUrl = null;
     },
     logout: (state) => {
       state.user = null;
