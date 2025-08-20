@@ -9,11 +9,10 @@ import ForgotPassword from "../pages/auth/ForgotPasswordPage";
 import ResetPassword from "../pages/auth/ResetPasswordPage";
 
 import Home from "../pages/HomePage";
-import Profile from "../views/user/Profile";
-import Discover from "../views/user/Discover";
-import FollowRequests from "../views/user/FollowRequests";
+import Profile from "../pages/user/ProfilePage"
+import Discover from "../pages/user/DiscoverPage";
+import FollowRequests from "../pages/user/FollowRequestsPage";
 import AddPost from "../pages/post/AddPostPage";
-import PostCard from "../pages/post/PostCardPage";
 
 
 const router = createBrowserRouter([

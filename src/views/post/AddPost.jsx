@@ -17,7 +17,7 @@ const AddPost = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!caption || !image) {
-            Toast.warning("Caption and Image are required!");
+            Toast.error("Caption and Image are required!");
             return;
         }
 

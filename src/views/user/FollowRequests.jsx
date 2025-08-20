@@ -42,18 +42,19 @@ const FollowRequests = () => {
                                 />
                                 <span>{req.senderName || req.senderUsername || "Unknown User"}</span>
                             </div>
+
                             <div className="space-x-2">
                                 <button
                                     onClick={() => handleAccept(req.id)}
-                                    className="px-4 py-1 bg-green-600 text-white rounded hover:bg-green-700"
+                                    className="px-4 py-1 bg-[#0095F6] text-white rounded font-semibold hover:bg-[#1877F2]"
                                 >
-                                    Accept
+                                    Confirm
                                 </button>
                                 <button
                                     onClick={() => handleReject(req.id)}
-                                    className="px-4 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+                                    className="px-4 py-1 bg-[#EFEFEF] text-black rounded font-semibold hover:bg-[#DBDBDB]"
                                 >
-                                    Reject
+                                    Delete
                                 </button>
                             </div>
                         </li>

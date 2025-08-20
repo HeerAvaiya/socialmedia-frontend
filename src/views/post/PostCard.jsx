@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";import { useDispatch, useSelector } from "react-redux";
+import { useState, useRef, useEffect } from "react"; import { useDispatch, useSelector } from "react-redux";
 import { HiDotsVertical } from "react-icons/hi";
 import { FaHeart, FaRegHeart, FaRegCommentDots } from "react-icons/fa";
 import { Dialog } from "@headlessui/react";
@@ -70,18 +70,23 @@ const PostCard = ({ post, isFeed = false, imgClass = "" }) => {
         if (file) setNewImage(file);
     };
 
-    const handleSave = () => {
+
+    const handleSave = async () => {
         setLoading(true);
         const formData = new FormData();
         if (newImage) formData.append("image", newImage);
         formData.append("caption", caption);
-        dispatch(updatePostImage({ postId: post.id, formData }));
-        setEditMode(false);
-        setNewImage(null);
-        setTimeout(() => {
-            setLoading(false);
+        try {
+            await dispatch(
+                updatePostImage({ postId: post.id, formData })
+            ).unwrap();
+            setNewImage(null);
             setShowEditModal(false);
-        }, 2000);
+        } catch (error) {
+            console.error("Update failed:", error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleDelete = () => {
@@ -113,7 +118,6 @@ const PostCard = ({ post, isFeed = false, imgClass = "" }) => {
         }
     };
 
-    //working in profile page
     const handleAddComment = () => {
         if (commentText.trim()) {
             dispatch(createComment({ postId: post.id, text: commentText }))
@@ -139,10 +143,7 @@ const PostCard = ({ post, isFeed = false, imgClass = "" }) => {
             .then(() => dispatch(getPostComments(post.id)));
     };
 
-    const imageSrc =
-        newImage
-            ? URL.createObjectURL(newImage)
-            : post.imageUrl || post.image || post.url || post.photo || "";
+    const imageSrc = post.imageUrl || post.image || post.url || post.photo || "";
 
     return (
         <div className="relative group border border-[#bfbbbb] border-t-0 rounded-t-none rounded-lg overflow-hidden p-2 bg-white">
@@ -261,15 +262,6 @@ const PostCard = ({ post, isFeed = false, imgClass = "" }) => {
                                 <p className="text-gray-400 text-xs">No likes yet</p>
                             )}
 
-                            {/* add Close button */}
-                            {/* <div className="mt-1 text-right">
-                                <button
-                                    className="bg-gray-300 px-4 py-1.5 rounded text-sm cursor-pointer"
-                                    onClick={() => setShowLikesModal(false)}
-                                >
-                                    Close
-                                </button>
-                            </div> */}
                         </div>
                     </Dialog.Panel>
                 </div>
@@ -387,15 +379,6 @@ const PostCard = ({ post, isFeed = false, imgClass = "" }) => {
                                 <p className="text-gray-400 text-xs">No comments yet</p>
                             )}
 
-                            {/* add close button */}
-                            {/* <div className="text-right">
-                                <button
-                                    onClick={() => setShowComments(false)}
-                                    className="bg-gray-300 px-4 py-1.5 rounded text-sm cursor-pointer"
-                                >
-                                    Close
-                                </button>
-                            </div> */}
                         </div>
                     </Dialog.Panel>
                 </div>
@@ -449,6 +432,7 @@ const PostCard = ({ post, isFeed = false, imgClass = "" }) => {
                             Edit Post
                         </Dialog.Title>
 
+
                         <textarea
                             value={caption}
                             onChange={(e) => setCaption(e.target.value)}
@@ -464,12 +448,6 @@ const PostCard = ({ post, isFeed = false, imgClass = "" }) => {
                             className="w-full text-sm mb-3"
                         />
 
-                        {/* <button
-                            onClick={handleSave}
-                            className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 text-sm"
-                        >
-                            Save
-                        </button> */}
                         <button
                             onClick={handleSave}
                             disabled={loading}
