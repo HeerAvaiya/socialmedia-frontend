@@ -10,7 +10,9 @@ export const useAuthentication = () => {
   const { user, token, loading, error, message } = useSelector((store) => store.auth);
 
   const login = (formData) => dispatch(loginAction(formData));
+
   const register = (formData) => dispatch(registerAction(formData));
+
   const clearAuth = () => dispatch(clearAuthState());
 
   return {
@@ -24,6 +26,3 @@ export const useAuthentication = () => {
     clearAuth,
   };
 };
-
-
-

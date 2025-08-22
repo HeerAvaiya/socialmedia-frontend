@@ -41,7 +41,6 @@ const authSlice = createSlice({
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       localStorage.removeItem("profileImageUrl");
-      localStorage.removeItem("following")
     },
   },
   extraReducers: (builder) => {

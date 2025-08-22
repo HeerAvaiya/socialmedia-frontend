@@ -20,9 +20,9 @@ const Profile = () => {
     const { userPosts } = useSelector((state) => state.post);
     const { token } = useSelector((state) => state.auth);
 
-    const [localImage, setLocalImage] = useState(() => {
-        return localStorage.getItem("profileImageUrl") || null;
-    });
+    // const [localImage, setLocalImage] = useState(() => {
+    //     return localStorage.getItem("profileImageUrl") || null;
+    // });
     const [loading, setLoading] = useState(false);
     const [showEdit, setShowEdit] = useState(false);
     const [editUsername, setEditUsername] = useState("");
@@ -35,13 +35,13 @@ const Profile = () => {
                 if (res?.payload) {
                     const { id, profileImageUrl } = res.payload;
 
-                    if (profileImageUrl) {
-                        localStorage.setItem("profileImageUrl", profileImageUrl);
-                        setLocalImage(profileImageUrl);
-                    } else {
-                        localStorage.removeItem("profileImageUrl");
-                        setLocalImage(null);
-                    }
+                    // if (profileImageUrl) {
+                    //     localStorage.setItem("profileImageUrl", profileImageUrl);
+                    //     setLocalImage(profileImageUrl);
+                    // } else {
+                    //     localStorage.removeItem("profileImageUrl");
+                    //     setLocalImage(null);
+                    // }
 
                     dispatch(getUserPosts(id));
                     dispatch(getFollowers(id));
@@ -59,18 +59,19 @@ const Profile = () => {
         setLoading(true);
         const res = await dispatch(uploadProfileImage(formData));
         setLoading(false);
-        if (res?.payload?.profileImageUrl) {
-            localStorage.setItem("profileImageUrl", res.payload.profileImageUrl);
-            setLocalImage(res.payload.profileImageUrl);
-        }
+        // if (res?.payload?.profileImageUrl) {
+        //     localStorage.setItem("profileImageUrl", res.payload.profileImageUrl);
+        //     setLocalImage(res.payload.profileImageUrl);
+        // }
     };
+
 
     const handleDeleteImage = async () => {
         setLoading(true);
         await dispatch(deleteProfileImage());
         setLoading(false);
-        localStorage.removeItem("profileImageUrl");
-        setLocalImage(null);
+        // localStorage.removeItem("profileImageUrl");
+        // setLocalImage(null);
     };
 
     const handleOpenModal = (type) => {
@@ -103,7 +104,8 @@ const Profile = () => {
         console.log("Updated userPosts 👉", userPosts);
     }, [userPosts]);
 
-    const imageUrl = user?.profileImageUrl || localImage || "/default.png";
+    // const imageUrl = user?.profileImageUrl || localImage || "/default.png";
+    const imageUrl = user?.profileImageUrl || "/default.png";
 
     return (
         <div className="p-4 max-w-lg mx-auto">

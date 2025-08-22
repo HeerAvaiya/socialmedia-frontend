@@ -38,19 +38,6 @@ export const deleteProfileImage = createAsyncThunk("user/deleteProfileImage", as
 });
 
 
-
-////working without searchbar
-// export const getDiscoverUsers = createAsyncThunk("user/getDiscoverUsers", async (_, thunkAPI) => {
-//   try {
-//     const res = await axiosClient.get("/users/discover");
-//     return res.data.users || res.data; // adjust based on backend response
-//   } catch (error) {
-//     return thunkAPI.rejectWithValue(error?.response?.data?.message || "Failed to fetch discover users");
-//   }
-// });
-
-
-////working with searchbar
 export const getDiscoverUsers = createAsyncThunk(
   "user/getDiscoverUsers",
   async (search = "", thunkAPI) => {
@@ -154,6 +141,19 @@ export const rejectFollowRequest = createAsyncThunk(
       return followerId;
     } catch (error) {
       return thunkAPI.rejectWithValue(error?.response?.data?.message || "Reject failed");
+    }
+  }
+);
+
+
+export const cancelFollowRequest = createAsyncThunk(
+  "user/cancelFollowRequest",
+  async (userId, thunkAPI) => {
+    try {
+      await axiosClient.delete(`/users/${userId}/cancel`);
+      return userId;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error?.response?.data?.message || "Cancel failed");
     }
   }
 );

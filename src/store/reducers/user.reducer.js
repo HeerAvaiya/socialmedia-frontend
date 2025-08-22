@@ -4,11 +4,11 @@ import {
   updateUser,
   uploadProfileImage,
   deleteProfileImage,
-  // getUserPosts,
   getDiscoverUsers,
   sendFollowRequest,
   acceptFollowRequest,
   rejectFollowRequest,
+  cancelFollowRequest,
   unfollowUser,
   getFollowers,
   getFollowing,
@@ -54,7 +54,7 @@ const userSlice = createSlice({
       })
       .addCase(updateUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload; 
+        state.user = action.payload;
         state.message = "Profile updated successfully";
         localStorage.setItem("user", JSON.stringify(action.payload));
       })
@@ -63,9 +63,23 @@ const userSlice = createSlice({
         state.error = action.payload;
       })
 
+      ////working
+      // .addCase(uploadProfileImage.fulfilled, (state, action) => {
+      //   if (state.user) {
+      //     state.user.profileImageUrl = action.payload.profileImageUrl;
+      //   }
+      //   state.message = "Profile image uploaded successfully";
+      // })
+
       .addCase(uploadProfileImage.fulfilled, (state, action) => {
         if (state.user) {
           state.user.profileImageUrl = action.payload.profileImageUrl;
+
+          const updatedUser = {
+            ...state.user,
+            profileImageUrl: action.payload.profileImageUrl,
+          };
+          localStorage.setItem("user", JSON.stringify(updatedUser));
         }
         state.message = "Profile image uploaded successfully";
       })
@@ -76,11 +90,6 @@ const userSlice = createSlice({
         }
         state.message = "Profile image deleted successfully";
       })
-
-      // .addCase(getUserPosts.fulfilled, (state, action) => {
-      //   state.posts = action.payload;
-      // })
-
 
       .addCase(getDiscoverUsers.pending, (state) => {
         state.loading = true;
@@ -126,6 +135,15 @@ const userSlice = createSlice({
         state.message = "Unfollowed user";
       })
 
+
+      .addCase(cancelFollowRequest.fulfilled, (state, action) => {
+        const userId = action.payload;
+        state.discoverUsers = state.discoverUsers.map((u) =>
+          u.id === userId ? { ...u, isFollowing: false, followStatus: "none" } : u
+        );
+        state.message = "Follow request cancelled";
+      })
+
       .addCase(getFollowers.fulfilled, (state, action) => {
         state.followers = action.payload;
       })
@@ -147,6 +165,7 @@ const userSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       });
+
 
   },
 });
