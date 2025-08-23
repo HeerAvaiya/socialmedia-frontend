@@ -25,7 +25,7 @@ const FollowRequests = () => {
             dispatch(acceptFollowRequest(followerId));
             setLoadingBtn(null);
             Toast.success("Request accepted.");
-        }, 3000);
+        }, 2000);
     };
 
     const handleReject = (followerId) => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
     getDiscoverUsers,
@@ -11,23 +11,9 @@ const RightSidebar = () => {
     const dispatch = useDispatch();
     const { discoverUsers, loading } = useSelector((state) => state.user);
 
-    const [search, setSearch] = useState("");
-    const [debouncedSearch, setDebouncedSearch] = useState("");
-    const [currentPage, setCurrentPage] = useState(1);
-
-    const usersPerPage = 7;
-
     useEffect(() => {
-        const handler = setTimeout(() => {
-            setDebouncedSearch(search);
-            setCurrentPage(1);
-        }, 400);
-        return () => clearTimeout(handler);
-    }, [search]);
-
-    useEffect(() => {
-        dispatch(getDiscoverUsers(debouncedSearch));
-    }, [dispatch, debouncedSearch]);
+        dispatch(getDiscoverUsers("")); // fetch initial users
+    }, [dispatch]);
 
     const handleFollowClick = (user) => {
         if (user.followStatus === "accepted") {
@@ -39,34 +25,19 @@ const RightSidebar = () => {
         }
     };
 
-    const totalUsers = discoverUsers.length;
-    const totalPages = Math.ceil(totalUsers / usersPerPage);
-    const indexOfLastUser = currentPage * usersPerPage;
-    const indexOfFirstUser = indexOfLastUser - usersPerPage;
-    const currentUsers = discoverUsers.slice(indexOfFirstUser, indexOfLastUser);
-
-    const goToPage = (page) => {
-        if (page >= 1 && page <= totalPages) setCurrentPage(page);
-    };
+    // Show only 8 users
+    const displayedUsers = discoverUsers.slice(0, 8);
 
     return (
         <aside className="w-80 border border-gray-200 bg-white right-4 top-20 p-4 overflow-y-auto">
 
-            <input
-                type="text"
-                placeholder="Search users..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-full p-2 border rounded mb-4"
-            />
-
             {loading && <p>Loading users...</p>}
-            {!loading && discoverUsers.length === 0 && (
+            {!loading && displayedUsers.length === 0 && (
                 <p className="text-gray-500">No users found.</p>
             )}
 
             <div className="space-y-3">
-                {currentUsers.map((user) => (
+                {displayedUsers.map((user) => (
                     <div
                         key={user.id}
                         className="flex items-center justify-between p-2 rounded border"
@@ -98,31 +69,8 @@ const RightSidebar = () => {
                     </div>
                 ))}
             </div>
-
-            {totalPages > 1 && (
-                <div className="flex justify-center mt-4 space-x-2">
-                    <button
-                        onClick={() => goToPage(currentPage - 1)}
-                        disabled={currentPage === 1}
-                        className="px-2 py-1 text-sm border rounded disabled:opacity-50"
-                    >
-                        Prev
-                    </button>
-                    <span className="px-2 py-1 text-sm">
-                        {currentPage} / {totalPages}
-                    </span>
-                    <button
-                        onClick={() => goToPage(currentPage + 1)}
-                        disabled={currentPage === totalPages}
-                        className="px-2 py-1 text-sm border rounded disabled:opacity-50"
-                    >
-                        Next
-                    </button>
-                </div>
-            )}
         </aside>
     );
 };
 
 export default RightSidebar;
-    

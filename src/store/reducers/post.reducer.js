@@ -170,7 +170,7 @@ const postSlice = createSlice({
                 if (feedPost) {
                     feedPost.likes = users;
                 }
-                state.message = "Fetched post likes successfully";
+                // state.message = "Fetched post likes successfully";
             })
 
             .addCase(getPostLikes.rejected, (state, action) => {
@@ -239,7 +239,7 @@ const postSlice = createSlice({
                 // state.loading = true;
             })
 
-         
+
             .addCase(deleteComment.fulfilled, (state, action) => {
                 const { id, postId } = action.payload;
                 const drop = (post) => {

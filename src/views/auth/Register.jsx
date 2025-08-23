@@ -153,7 +153,7 @@ const Register = () => {
                 setButtonLoading(false);
                 dispatch(clearAuthState());
                 navigate("/login");
-            }, 3000);
+            }, 2000);
         }
     }, [user, navigate, dispatch]);
 

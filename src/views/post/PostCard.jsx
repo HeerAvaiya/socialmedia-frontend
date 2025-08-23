@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react"; import { useDispatch, useSelector } from "react-redux";
 import { HiDotsVertical } from "react-icons/hi";
-import { FaHeart, FaRegHeart, FaRegCommentDots } from "react-icons/fa";
+import { FaHeart, FaRegHeart, FaRegCommentDots, FaTrash } from "react-icons/fa";
 import { Dialog } from "@headlessui/react";
 import {
     updatePostImage,
@@ -36,6 +36,7 @@ const PostCard = ({ post, isFeed = false, imgClass = "" }) => {
     const [showComments, setShowComments] = useState(false);
     const [editingCommentId, setEditingCommentId] = useState(null);
     const [editingText, setEditingText] = useState("");
+    const [confirmModal, setConfirmModal] = useState({ open: false, postId: null });
 
 
     const postFromRedux = useSelector((state) => {
@@ -61,15 +62,37 @@ const PostCard = ({ post, isFeed = false, imgClass = "" }) => {
 
     const handleUpdateClick = () => {
         setMenuOpen(false);
-        // setEditMode(true);
         setShowEditModal(true);
     };
+
+    const handleClick = () => {
+        setLoading(true);
+        setTimeout(async () => {
+            await handleSave();
+            setLoading(false);
+        }, 2000);
+    };
+
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) setNewImage(file);
     };
 
+    const handleDelete = () => {
+        setMenuOpen(false);
+        setConfirmModal({ open: true, postId: post.id });
+    };
+
+    const confirmDelete = () => {
+        if (!confirmModal.postId) return;
+        dispatch(deletePost(confirmModal.postId));
+        setConfirmModal({ open: false, postId: null });
+    };
+
+    const cancelDelete = () => {
+        setConfirmModal({ open: false, postId: null });
+    };
 
     const handleSave = async () => {
         setLoading(true);
@@ -89,12 +112,12 @@ const PostCard = ({ post, isFeed = false, imgClass = "" }) => {
         }
     };
 
-    const handleDelete = () => {
-        setMenuOpen(false);
-        if (window.confirm("Are you sure you want to delete this post?")) {
-            dispatch(deletePost(post.id));
-        }
-    };
+    // const handleDelete = () => {
+    //     setMenuOpen(false);
+    //     if (window.confirm("Are you sure you want to delete this post?")) {
+    //         dispatch(deletePost(post.id));
+    //     }
+    // };
 
     const handleLike = async () => {
         try {
@@ -385,6 +408,32 @@ const PostCard = ({ post, isFeed = false, imgClass = "" }) => {
             </Dialog>
 
 
+            {/* {!isFeed && (
+                <div className="absolute top-1 right-1">
+                    <HiDotsVertical
+                        className="cursor-pointer text-white bg-black/50 rounded-full p-1"
+                        size={20}
+                        onClick={() => setMenuOpen((prev) => !prev)}
+                    />
+                    {menuOpen && (
+                        <div className="absolute right-0 mt-2 w-28 bg-white shadow-md rounded text-sm z-10">
+                            <button
+                                className="w-full text-left px-3 py-2 hover:bg-gray-100 cursor-pointer"
+                                onClick={handleUpdateClick}
+                            >
+                                Update
+                            </button>
+                            <button
+                                className="w-full text-left px-3 py-2 hover:bg-gray-100 text-red-600 cursor-pointer"
+                                onClick={handleDelete}
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    )}
+                </div>
+            )} */}
+
             {!isFeed && (
                 <div className="absolute top-1 right-1">
                     <HiDotsVertical
@@ -411,6 +460,31 @@ const PostCard = ({ post, isFeed = false, imgClass = "" }) => {
                 </div>
             )}
 
+            {/* Confirm Modal */}
+            {confirmModal.open && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+                    <div className="bg-white rounded-lg shadow-lg px-6 py-8 w-110">
+                        <FaTrash className="w-8 h-8 text-gray-400 mx-auto mb-4" />
+                        <h2 className="text-lg font-semibold mb-6 text-center">
+                            Are you sure you want to delete this post?
+                        </h2>
+                        <div className="flex justify-center gap-2">
+                            <button
+                                onClick={cancelDelete}
+                                className="px-4 py-1 bg-gray-300 text-black rounded hover:bg-gray-400"
+                            >
+                                No, Cancel
+                            </button>
+                            <button
+                                onClick={confirmDelete}
+                                className="px-4 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                            >
+                                Yes, I'm Sure
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <Dialog
                 open={showEditModal}
@@ -422,7 +496,7 @@ const PostCard = ({ post, isFeed = false, imgClass = "" }) => {
                     <Dialog.Panel className="bg-white rounded-lg p-5 w-full max-w-sm relative">
 
                         <button
-                            className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-lg font-bold"
+                            className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-4xl right-4 font-bold"
                             onClick={() => setShowEditModal(false)}
                         >
                             ×
@@ -448,17 +522,15 @@ const PostCard = ({ post, isFeed = false, imgClass = "" }) => {
                             className="w-full text-sm mb-3"
                         />
 
+
                         <button
-                            onClick={handleSave}
+                            onClick={handleClick}
                             disabled={loading}
-                            className={`w-full py-2 rounded text-sm text-white 
+                            className={`w-full py-2 rounded text-sm text-white flex justify-center items-center
                             ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"}`}
                         >
                             {loading ? (
-                                <div className="flex justify-center items-center">
-                                    <div className="border-2 border-white border-t-transparent rounded-full w-4 h-4 animate-spin mr-2"></div>
-                                    Saving...
-                                </div>
+                                <div className="border-2 border-white border-t-transparent rounded-full w-4 h-4 animate-spin"></div>
                             ) : (
                                 "Save"
                             )}
@@ -472,3 +544,6 @@ const PostCard = ({ post, isFeed = false, imgClass = "" }) => {
 };
 
 export default PostCard;
+
+
+

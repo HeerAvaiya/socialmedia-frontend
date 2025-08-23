@@ -90,7 +90,7 @@ export const getFollowers = createAsyncThunk(
   async (userId, thunkAPI) => {
     try {
       const res = await axiosClient.get(`/users/${userId}/followers`);
-      console.log("res", res.data.followers);
+      // console.log("res", res.data.followers);
 
       const followersArray = Array.isArray(res.data.followers)
         ? res.data.followers
