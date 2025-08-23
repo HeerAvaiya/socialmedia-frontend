@@ -1,10 +1,14 @@
 import React, { useMemo } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { removeFollower, unfollowUser } from "../../store/actions/user.action";
 
 const FollowersListModal = ({ type, onClose }) => {
     const navigate = useNavigate();
-    const { followers = [], following = [], user: authUser } = useSelector((s) => s.user);
+    const dispatch = useDispatch();
+    const { followers = [], following = [], user: authUser } = useSelector(
+        (s) => s.user
+    );
 
     const data = type === "followers" ? followers : following;
 
@@ -17,13 +21,22 @@ const FollowersListModal = ({ type, onClose }) => {
         navigate(`/profile/${id}`);
     };
 
+    const handleRemoveFollower = (followerId) => {
+        if (!authUser?.id) return;
+        dispatch(removeFollower({ userId: authUser.id, followerId }));
+    };
+
+    const handleUnfollow = (userId) => {
+        if (!authUser?.id) return;
+        dispatch(unfollowUser(userId));
+    };
+
     const list = useMemo(() => data || [], [data]);
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
             <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm max-h-[80vh] overflow-hidden flex flex-col">
 
-                {/* Header */}
                 <div className="flex items-center justify-between px-4 py-3 border-b">
                     <h3 className="text-lg font-semibold capitalize">{type}</h3>
                     <button
@@ -37,10 +50,11 @@ const FollowersListModal = ({ type, onClose }) => {
                     </button>
                 </div>
 
-                {/* List */}
                 <div className="flex-1 overflow-y-auto">
                     {list.length === 0 ? (
-                        <div className="p-6 text-center text-sm text-gray-500">No {type} found</div>
+                        <div className="p-6 text-center text-sm text-gray-500">
+                            No {type} found
+                        </div>
                     ) : (
                         <ul>
                             {list.map((u) => {
@@ -50,6 +64,9 @@ const FollowersListModal = ({ type, onClose }) => {
                                     u?.profileImageUrl?.trim() ||
                                     u?.profileImage?.trim() ||
                                     "/default.png";
+
+                                const canRemove = type === "followers" && authUser?.id;
+                                const canUnfollow = type === "following" && authUser?.id;
 
                                 return (
                                     <li
@@ -70,10 +87,29 @@ const FollowersListModal = ({ type, onClose }) => {
                                                 <div className="text-sm font-medium">
                                                     {u?.username || name || "Unknown"}
                                                 </div>
-                                                {name ? (
+                                                {name && (
                                                     <div className="text-xs text-gray-500">{name}</div>
-                                                ) : null}
+                                                )}
                                             </div>
+                                        </div>
+
+                                        <div className="ml-2 flex-shrink-0 flex gap-2">
+                                            {canRemove && (
+                                                <button
+                                                    onClick={() => handleRemoveFollower(uid)}
+                                                    className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-sm"
+                                                >
+                                                    Remove
+                                                </button>
+                                            )}
+                                            {canUnfollow && (
+                                                <button
+                                                    onClick={() => handleUnfollow(uid)}
+                                                    className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-sm"
+                                                >
+                                                    Unfollow
+                                                </button>
+                                            )}
                                         </div>
                                     </li>
                                 );

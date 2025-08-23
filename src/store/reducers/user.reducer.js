@@ -13,6 +13,7 @@ import {
   getFollowers,
   getFollowing,
   getFollowRequests,
+  removeFollower,
 } from "../actions/user.action";
 
 const initialState = {
@@ -31,6 +32,12 @@ const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
+    setFollowing(state, action) {
+      state.following = action.payload;
+    },
+    setFollowers(state, action) {
+      state.followers = action.payload;
+    },
     clearUserState: () => initialState,
   },
   extraReducers: (builder) => {
@@ -63,14 +70,6 @@ const userSlice = createSlice({
         state.error = action.payload;
       })
 
-      ////working
-      // .addCase(uploadProfileImage.fulfilled, (state, action) => {
-      //   if (state.user) {
-      //     state.user.profileImageUrl = action.payload.profileImageUrl;
-      //   }
-      //   state.message = "Profile image uploaded successfully";
-      // })
-
       .addCase(uploadProfileImage.fulfilled, (state, action) => {
         if (state.user) {
           state.user.profileImageUrl = action.payload.profileImageUrl;
@@ -102,15 +101,12 @@ const userSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-
       .addCase(sendFollowRequest.fulfilled, (state, action) => {
-        const userId = action.payload.userId;
-        state.discoverUsers = state.discoverUsers.map((u) =>
-          u.id === userId ? { ...u, isFollowing: true, followStatus: 'pending' } : u
+        const { userId, followStatus } = action.payload;
+        state.discoverUsers = state.discoverUsers.map(u =>
+          u.id === userId ? { ...u, isFollowing: followStatus !== "none", followStatus } : u
         );
-        state.message = action.payload.status;
       })
-
 
 
       .addCase(acceptFollowRequest.fulfilled, (state, action) => {
@@ -130,18 +126,16 @@ const userSlice = createSlice({
       .addCase(unfollowUser.fulfilled, (state, action) => {
         const userId = action.payload;
         state.discoverUsers = state.discoverUsers.map((u) =>
-          u.id === userId ? { ...u, isFollowing: false, followStatus: null } : u
+          u.id === userId ? { ...u, isFollowing: false, followStatus: "none" } : u
         );
-        state.message = "Unfollowed user";
+        state.following = state.following.filter((u) => u.id !== userId);
       })
-
 
       .addCase(cancelFollowRequest.fulfilled, (state, action) => {
         const userId = action.payload;
         state.discoverUsers = state.discoverUsers.map((u) =>
           u.id === userId ? { ...u, isFollowing: false, followStatus: "none" } : u
         );
-        state.message = "Follow request cancelled";
       })
 
       .addCase(getFollowers.fulfilled, (state, action) => {
@@ -164,8 +158,13 @@ const userSlice = createSlice({
       .addCase(getFollowRequests.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
 
+      .addCase(removeFollower.fulfilled, (state, action) => {
+        const followerId = action.payload;
+        state.followers = state.followers.filter((f) => f.id !== followerId);
+        state.message = "Follower removed";
+      });
 
   },
 });

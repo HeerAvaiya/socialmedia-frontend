@@ -18,7 +18,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import SearchIcon from "@mui/icons-material/Search";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import AddBoxIcon from "@mui/icons-material/AddBox";
-import MenuIcon from "@mui/icons-material/Menu"; 
+import MenuIcon from "@mui/icons-material/Menu";
 import { clearUserState } from "../store/reducers/user.reducer";
 
 const Sidebar = () => {
@@ -30,22 +30,6 @@ const Sidebar = () => {
 
     const { token } = useSelector((state) => state.auth);
     const { user, followRequests } = useSelector((state) => state.user);
-
-    // useEffect(() => {
-    //     const savedImage = localStorage.getItem("profileImageUrl");
-    //     if (savedImage) setLocalImage(savedImage);
-    // }, []);
-
-    // useEffect(() => {
-    //     if (user?.profileImageUrl) {
-    //         const current = localStorage.getItem("profileImageUrl");
-    //         if (current !== user.profileImageUrl) {
-    //             localStorage.setItem("profileImageUrl", user.profileImageUrl);
-    //             setLocalImage(user.profileImageUrl);
-    //         }
-    //     }
-    // }, [user?.profileImageUrl]);
-
 
 
     useEffect(() => {
@@ -59,22 +43,6 @@ const Sidebar = () => {
             dispatch(getFollowRequests());
         }
     }, [dispatch, user?.id]);
-
-    // const handleImageChange = async (e) => {
-    //     const file = e.target.files[0];
-    //     if (file) {
-    //         const formData = new FormData();
-    //         formData.append("image", file);
-    //         setLoading(true);
-    //         const res = await dispatch(uploadProfileImage(formData));
-    //         setLoading(false);
-
-    //         if (res?.payload?.profileImageUrl) {
-    //             localStorage.setItem("profileImageUrl", res.payload.profileImageUrl);
-    //             setLocalImage(res.payload.profileImageUrl);
-    //         }
-    //     }
-    // };
 
     const handleDeleteImage = async (e) => {
         e.preventDefault();
@@ -138,7 +106,7 @@ const Sidebar = () => {
                     >
                         <AddBoxIcon /> <span>Create Post</span>
                     </button>
-                    <button
+                    {/* <button
                         onClick={() => navigate("/profile")}
                         className="flex items-center space-x-3 hover:bg-gray-100 p-2 rounded"
                     >
@@ -167,7 +135,39 @@ const Sidebar = () => {
                             )}
                         </IconButton>
                         <span className="ml-2">Profile</span>
-                    </button>
+                    </button> */}
+
+                    <div
+                        onClick={() => navigate("/profile")}
+                        className="flex items-center space-x-3 hover:bg-gray-100 p-2 rounded cursor-pointer"
+                    >
+                        <IconButton
+                            onClick={(e) => e.stopPropagation()} // prevent outer div click
+                            onContextMenu={handleDeleteImage}
+                            sx={{
+                                padding: "0 !important",
+                                bgcolor: "#ec4899",
+                                color: "#fff",
+                                "&:hover": { bgcolor: "#db2777" },
+                                width: "31px",
+                                height: "31px",
+                            }}
+                        >
+                            {loading ? (
+                                <CircularProgress size={20} sx={{ color: "#fff" }} />
+                            ) : imageUrl ? (
+                                <img
+                                    src={imageUrl}
+                                    alt="profile"
+                                    className="w-full h-full rounded-full object-cover"
+                                />
+                            ) : (
+                                <PersonIcon />
+                            )}
+                        </IconButton>
+                        <span className="ml-2">Profile</span>
+                    </div>
+
 
 
                 </nav>

@@ -55,23 +55,34 @@ export const getDiscoverUsers = createAsyncThunk(
 );
 
 
-export const sendFollowRequest = createAsyncThunk("user/sendFollowRequest", async (userId, thunkAPI) => {
-  try {
-    const res = await axiosClient.post(`/users/${userId}/follow`);
-    return { userId, status: res.data.message };
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error?.response?.data?.message || "Follow request failed");
+export const sendFollowRequest = createAsyncThunk(
+  "user/sendFollowRequest",
+  async (userId, thunkAPI) => {
+    try {
+      const res = await axiosClient.post(`/users/${userId}/follow`);
+      return { userId, followStatus: res.data.followStatus }; // now correct: pending or accepted
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error?.response?.data?.message || "Follow failed"
+      );
+    }
   }
-});
+);
 
-export const unfollowUser = createAsyncThunk("user/unfollowUser", async (userId, thunkAPI) => {
-  try {
-    await axiosClient.delete(`/users/${userId}/unfollow`);
-    return userId;
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error?.response?.data?.message || "Unfollow failed");
+
+export const unfollowUser = createAsyncThunk(
+  "user/unfollowUser",
+  async (userId, thunkAPI) => {
+    try {
+      await axiosClient.delete(`/users/${userId}/unfollow`);
+      return userId;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error?.response?.data?.message || "Unfollow failed"
+      );
+    }
   }
-});
+);
 
 
 export const getFollowers = createAsyncThunk(
@@ -154,6 +165,21 @@ export const cancelFollowRequest = createAsyncThunk(
       return userId;
     } catch (error) {
       return thunkAPI.rejectWithValue(error?.response?.data?.message || "Cancel failed");
+    }
+  }
+);
+
+
+export const removeFollower = createAsyncThunk(
+  "user/removeFollower",
+  async ({ userId, followerId }, thunkAPI) => {
+    try {
+      await axiosClient.delete(`/users/followers/${followerId}`);
+      return followerId;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error?.response?.data?.message || "Failed to remove follower"
+      );
     }
   }
 );
