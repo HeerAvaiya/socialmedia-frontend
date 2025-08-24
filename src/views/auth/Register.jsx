@@ -124,6 +124,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { registerAction } from "../../store/actions/auth.action";
 import { clearAuthState } from "../../store/reducers/auth.reducer";
+import { clearErrorAndMessage } from "../../store/reducers/auth.reducer";
 import { useNavigate } from "react-router-dom";
 
 const Register = () => {
@@ -144,6 +145,10 @@ const Register = () => {
 
     useEffect(() => {
         dispatch(clearAuthState());
+    }, [dispatch]);
+
+    useEffect(() => {
+        dispatch(clearErrorAndMessage());
     }, [dispatch]);
 
     useEffect(() => {
@@ -197,8 +202,17 @@ const Register = () => {
                 {localError && (
                     <div className="flex items-center justify-between bg-red-100 text-red-600 px-4 py-2 rounded-md mb-4">
                         <span>{localError}</span>
-                        <button
+                        {/* <button
                             onClick={() => setLocalError(null)}
+                            className="ml-2 text-red-600 font-bold"
+                        >
+                            ✕
+                        </button> */}
+                        <button
+                            onClick={() => {
+                                setLocalError(null);
+                                dispatch(clearErrorAndMessage());
+                            }}
                             className="ml-2 text-red-600 font-bold"
                         >
                             ✕

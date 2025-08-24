@@ -1,10 +1,13 @@
-//working only loader not working
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useAuthentication } from '../../hooks/useAuthentication';
+import { clearErrorAndMessage } from "../../store/reducers/auth.reducer";
 import Loader from '../../components/common/Loader';
 
+
 const Login = () => {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const { login, clearAuth, token, loading, error, user } = useAuthentication();
 
@@ -48,6 +51,14 @@ const Login = () => {
         return Object.keys(errors).length === 0;
     };
 
+    const handleForgotPassword = () => {
+        if (!formData.email.trim()) {
+            setFormErrors((prev) => ({ ...prev, email: "Email is required" }));
+        } else {
+            navigate(`/forgot-password?email=${encodeURIComponent(formData.email)}`);
+        }
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!validateForm()) return;
@@ -67,8 +78,18 @@ const Login = () => {
                 {localError && (
                     <div className="flex items-center justify-between bg-red-100 text-red-600 px-4 py-2 rounded-md mb-4">
                         <span>{localError}</span>
-                        <button
+                        {/* <button
                             onClick={() => setLocalError(null)}
+                            className="ml-2 text-red-600 font-bold"
+                        >
+                            ✕
+                        </button> */}
+
+                        <button
+                            onClick={() => {
+                                setLocalError(null);
+                                dispatch(clearErrorAndMessage());
+                            }}
                             className="ml-2 text-red-600 font-bold"
                         >
                             ✕
@@ -105,7 +126,7 @@ const Login = () => {
                         )}
                     </div>
 
-                    <div className="text-right text-sm mt-1">
+                    {/* <div className="text-right text-sm mt-1">
                         <span
                             onClick={() => {
                                 if (!formData.email.trim()) {
@@ -114,6 +135,15 @@ const Login = () => {
                                     navigate(`/forgot-password?email=${encodeURIComponent(formData.email)}`);
                                 }
                             }}
+                            className="text-purple-600 hover:underline cursor-pointer"
+                        >
+                            Forgot Password?
+                        </span>
+                    </div> */}
+
+                    <div className="text-right text-sm mt-1">
+                        <span
+                            onClick={handleForgotPassword}
                             className="text-purple-600 hover:underline cursor-pointer"
                         >
                             Forgot Password?

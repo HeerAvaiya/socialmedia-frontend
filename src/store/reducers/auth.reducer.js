@@ -42,6 +42,10 @@ const authSlice = createSlice({
       localStorage.removeItem("user");
       localStorage.removeItem("profileImageUrl");
     },
+    clearErrorAndMessage: (state) => {
+      state.error = null;
+      state.message = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -109,5 +113,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { clearAuthState, logout } = authSlice.actions;
-export default authSlice.reducer;
+export const { clearAuthState, logout , clearErrorAndMessage } = authSlice.actions;
+export default authSlice.reducer;          

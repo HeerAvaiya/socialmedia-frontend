@@ -119,7 +119,20 @@ const PostCard = ({ post, isFeed = false, imgClass = "" }) => {
     //     }
     // };
 
+    // const handleLike = async () => {
+    //     try {
+    //         const res = await dispatch(toggleLike(post.id));
+    //         if (res.payload) {
+    //             setLiked(res.payload.likedByMe);
+    //             setLikesCount(res.payload.likesCount);
+    //         }
+    //     } catch (err) {
+    //         console.error(err);
+    //     }
+    // };
+
     const handleLike = async () => {
+        if (!post?.id) return; // safeguard
         try {
             const res = await dispatch(toggleLike(post.id));
             if (res.payload) {
@@ -127,11 +140,23 @@ const PostCard = ({ post, isFeed = false, imgClass = "" }) => {
                 setLikesCount(res.payload.likesCount);
             }
         } catch (err) {
-            console.error(err);
+            console.error("Failed to toggle like:", err);
         }
     };
 
+    // const handleShowLikes = async () => {
+    //     try {
+    //         const res = await dispatch(getPostLikes(post.id)).unwrap();
+    //         setLikedUsers(res.users || []);
+    //         setShowLikesModal(true);
+    //     } catch (err) {
+    //         console.error("Failed to fetch likes:", err);
+    //     }
+    // };
+
+
     const handleShowLikes = async () => {
+        if (!post?.id) return; // safeguard
         try {
             const res = await dispatch(getPostLikes(post.id)).unwrap();
             setLikedUsers(res.users || []);
@@ -141,29 +166,66 @@ const PostCard = ({ post, isFeed = false, imgClass = "" }) => {
         }
     };
 
+    // const handleAddComment = () => {
+    //     if (commentText.trim()) {
+    //         dispatch(createComment({ postId: post.id, text: commentText }))
+    //             .then(() => dispatch(getPostComments(post.id)));
+    //         setCommentText("");
+    //     }
+    // };
+
+    // const handleAddComment = () => {
+    //     if (!post?.id) return; // safeguard
+    //     if (commentText.trim()) {
+    //         dispatch(createComment({ postId: post.id, text: commentText }))
+    //             .then(() => dispatch(getPostComments(post.id)));
+    //         setCommentText("");
+    //     }
+    // };
+
     const handleAddComment = () => {
-        if (commentText.trim()) {
-            dispatch(createComment({ postId: post.id, text: commentText }))
-                .then(() => dispatch(getPostComments(post.id)));
-            setCommentText("");
-        }
+        if (!post?.id || !commentText.trim()) return;
+        dispatch(createComment({ postId: post.id, text: commentText }))
+            .then(() => setCommentText(""));
     };
+
+    // const handleUpdateComment = (commentId) => {
+    //     if (editingText.trim()) {
+    //         dispatch(updateComment({ commentId, text: editingText }))
+    //             .unwrap()
+    //             .then(() => {
+    //                 setEditingCommentId(null);
+    //                 setEditingText("");
+    //             })
+    //             .catch((err) => console.error("Failed to update:", err));
+    //     }
+    // };
 
     const handleUpdateComment = (commentId) => {
-        if (editingText.trim()) {
-            dispatch(updateComment({ commentId, text: editingText }))
-                .unwrap()
-                .then(() => {
-                    setEditingCommentId(null);
-                    setEditingText("");
-                })
-                .catch((err) => console.error("Failed to update:", err));
-        }
+        if (!editingText.trim() || !post?.id) return;
+        dispatch(updateComment({ commentId, text: editingText, postId: post.id }))
+            .unwrap()
+            .then(() => {
+                setEditingCommentId(null);
+                setEditingText("");
+            })
+            .catch((err) => console.error("Failed to update:", err));
     };
 
+    // const handleDeleteComment = (commentId) => {
+    //     dispatch(deleteComment(commentId))
+    //         .then(() => dispatch(getPostComments(post.id)));
+    // };
+
+    // const handleDeleteComment = (commentId) => {
+    //     if (!post?.id) return;
+    //     dispatch(deleteComment({ commentId, postId: post.id }))
+    //         .then(() => dispatch(getPostComments(post.id)));
+    // };
+
     const handleDeleteComment = (commentId) => {
-        dispatch(deleteComment(commentId))
-            .then(() => dispatch(getPostComments(post.id)));
+        if (!post?.id) return;
+        dispatch(deleteComment({ commentId, postId: post.id }));
     };
 
     const imageSrc = post.imageUrl || post.image || post.url || post.photo || "";

@@ -116,41 +116,128 @@ export const getPostLikes = createAsyncThunk(
     }
 );
 
+// export const createComment = createAsyncThunk(
+//     "post/createComment",
+//     async ({ postId, text }, thunkAPI) => {
+//         try {
+//             const res = await axiosClient.post(`/posts/${postId}/comments`, { text });
+//             return { postId, comment: res.data.data };
+//         } catch (error) {
+//             return thunkAPI.rejectWithValue(error?.response?.data?.message || "Failed to create comment");
+//         }
+//     }
+// );
+
+// export const createComment = createAsyncThunk(
+//     "post/createComment",
+//     async ({ postId, text }, thunkAPI) => {
+//         try {
+//             const res = await axiosClient.post(`/posts/${postId}/comments`, { text });
+//             // return full updated post
+//             return res.data.post;
+//         } catch (error) {
+//             return thunkAPI.rejectWithValue(error?.response?.data?.message || "Failed to create comment");
+//         }
+//     }
+// );
+
 export const createComment = createAsyncThunk(
     "post/createComment",
     async ({ postId, text }, thunkAPI) => {
         try {
             const res = await axiosClient.post(`/posts/${postId}/comments`, { text });
-            return { postId, comment: res.data.data };
+            return { postId, comment: res.data.data }; // return only new comment
         } catch (error) {
             return thunkAPI.rejectWithValue(error?.response?.data?.message || "Failed to create comment");
         }
     }
 );
 
+// export const updateComment = createAsyncThunk(
+//     "post/updateComment",
+//     async ({ commentId, text }, thunkAPI) => {
+//         try {
+//             const res = await axiosClient.put(`/posts/comments/${commentId}`, { text });
+//             return res.data.data;
+//         } catch (error) {
+//             return thunkAPI.rejectWithValue(error?.response?.data?.message || "Failed to update comment");
+//         }
+//     }
+// );
+
+// export const updateComment = createAsyncThunk(
+//     "post/updateComment",
+//     async ({ commentId, text }, thunkAPI) => {
+//         try {
+//             const res = await axiosClient.put(`/posts/comments/${commentId}`, { text });
+//             return { comment: res.data.data, postId: res.data.data.postId }; // ensure postId included
+//         } catch (error) {
+//             return thunkAPI.rejectWithValue(error?.response?.data?.message || "Failed to update comment");
+//         }
+//     }
+// );
+
 export const updateComment = createAsyncThunk(
     "post/updateComment",
-    async ({ commentId, text }, thunkAPI) => {
+    async ({ commentId, text, postId }, thunkAPI) => {
         try {
             const res = await axiosClient.put(`/posts/comments/${commentId}`, { text });
-            return res.data.data;
+            return { comment: res.data.data, postId };
         } catch (error) {
             return thunkAPI.rejectWithValue(error?.response?.data?.message || "Failed to update comment");
         }
     }
 );
 
+// export const deleteComment = createAsyncThunk(
+//     "post/deleteComment",
+//     async (commentId, thunkAPI) => {
+//         try {
+//             await axiosClient.delete(`/posts/comments/${commentId}`);
+//             return commentId;
+//         } catch (error) {
+//             return thunkAPI.rejectWithValue(error?.response?.data?.message || "Failed to delete comment");
+//         }
+//     }
+// );
+
+// export const deleteComment = createAsyncThunk(
+//     "post/deleteComment",
+//     async ({ commentId, postId }, thunkAPI) => {
+//         try {
+//             await axiosClient.delete(`/posts/comments/${commentId}`);
+//             return { id: commentId, postId };
+//         } catch (error) {
+//             return thunkAPI.rejectWithValue(error?.response?.data?.message || "Failed to delete comment");
+//         }
+//     }
+// );
+
 export const deleteComment = createAsyncThunk(
     "post/deleteComment",
-    async (commentId, thunkAPI) => {
+    async ({ commentId, postId }, thunkAPI) => {
         try {
             await axiosClient.delete(`/posts/comments/${commentId}`);
-            return commentId;
+            return { id: commentId, postId };
         } catch (error) {
             return thunkAPI.rejectWithValue(error?.response?.data?.message || "Failed to delete comment");
         }
     }
 );
+
+
+// export const getPostComments = createAsyncThunk(
+//     "post/getComments",
+//     async (postId, thunkAPI) => {
+//         try {
+//             const res = await axiosClient.get(`/posts/${postId}/comments`);
+//             return { postId, comments: res.data.data };
+//         } catch (error) {
+//             return thunkAPI.rejectWithValue(error?.response?.data?.message || "Failed to get comments");
+//         }
+//     }
+// );
+
 
 export const getPostComments = createAsyncThunk(
     "post/getComments",
@@ -163,7 +250,6 @@ export const getPostComments = createAsyncThunk(
         }
     }
 );
-
 
 export const getFeedPosts = createAsyncThunk(
     "post/getFeedPosts",
