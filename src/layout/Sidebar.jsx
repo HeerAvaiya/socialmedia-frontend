@@ -2,10 +2,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
 import {
     getUserMe,
-    uploadProfileImage,
     deleteProfileImage,
     getFollowRequests,
 } from "../store/actions/user.action";
+import { logoutAction } from "../store/actions/auth.action";
 import { useNavigate, Link } from "react-router-dom";
 import { clearAuthState } from "../store/reducers/auth.reducer";
 
@@ -49,19 +49,16 @@ const Sidebar = () => {
         setLoading(true);
         await dispatch(deleteProfileImage());
         setLoading(false);
-        localStorage.removeItem("profileImageUrl");
         setLocalImage(null);
     };
 
     const handleLogout = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        localStorage.removeItem("profileImageUrl");
-        localStorage.removeItem("following");
-        dispatch(clearUserState());
-        setLocalImage(null);
-        dispatch(clearAuthState());
-        navigate("/login");
+        dispatch(logoutAction()).then(() => {
+            dispatch(clearUserState());
+            setLocalImage(null);
+            dispatch(clearAuthState())
+            navigate("/login");
+        });
     };
 
     const imageUrl = user?.profileImageUrl || localImage;
@@ -106,43 +103,13 @@ const Sidebar = () => {
                     >
                         <AddBoxIcon /> <span>Create Post</span>
                     </button>
-                    {/* <button
-                        onClick={() => navigate("/profile")}
-                        className="flex items-center space-x-3 hover:bg-gray-100 p-2 rounded"
-                    >
-                        <IconButton
-                            onClick={() => { }}
-                            onContextMenu={handleDeleteImage}
-                            sx={{
-                                padding: "0 !important",
-                                bgcolor: "#ec4899",
-                                color: "#fff",
-                                "&:hover": { bgcolor: "#db2777" },
-                                width: "31px",
-                                height: "31px",
-                            }}
-                        >
-                            {loading ? (
-                                <CircularProgress size={20} sx={{ color: "#fff" }} />
-                            ) : imageUrl ? (
-                                <img
-                                    src={imageUrl}
-                                    alt="profile"
-                                    className="w-full h-full rounded-full object-cover"
-                                />
-                            ) : (
-                                <PersonIcon />
-                            )}
-                        </IconButton>
-                        <span className="ml-2">Profile</span>
-                    </button> */}
 
                     <div
                         onClick={() => navigate("/profile")}
                         className="flex items-center space-x-3 hover:bg-gray-100 p-2 rounded cursor-pointer"
                     >
                         <IconButton
-                            onClick={(e) => e.stopPropagation()} // prevent outer div click
+                            onClick={(e) => e.stopPropagation()}
                             onContextMenu={handleDeleteImage}
                             sx={{
                                 padding: "0 !important",
@@ -168,15 +135,10 @@ const Sidebar = () => {
                         <span className="ml-2">Profile</span>
                     </div>
 
-
-
                 </nav>
             </div>
 
-            {/* BOTTOM: Profile + Logout */}
             <div className="px-4 py-6 flex flex-col space-y-4">
-
-                {/* Logout */}
                 <button
                     onClick={handleLogout}
                     className="flex items-center space-x-3 hover:bg-gray-100 p-2 rounded text-red-500"

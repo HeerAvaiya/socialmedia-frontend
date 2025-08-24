@@ -12,7 +12,7 @@ const RightSidebar = () => {
     const { discoverUsers, loading } = useSelector((state) => state.user);
 
     useEffect(() => {
-        dispatch(getDiscoverUsers("")); // fetch initial users
+        dispatch(getDiscoverUsers("")); 
     }, [dispatch]);
 
     const handleFollowClick = (user) => {

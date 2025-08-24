@@ -3,9 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const useUserDetail = () => {
-    const user = useSelector((state) => state.user.user);
-    const token = useSelector((state) => state.auth.token);
+
     const navigate = useNavigate();
+
+    const user = useSelector((state) => state.user.user);
+    
+    const token = useSelector((state) => state.auth.token);
 
     useEffect(() => {
         if (user) {
@@ -18,7 +21,10 @@ const useUserDetail = () => {
         }
     }, [user, navigate]);
 
-    return { user, token };
+    return {
+        user,
+        token,
+    };
 };
 
 export default useUserDetail;

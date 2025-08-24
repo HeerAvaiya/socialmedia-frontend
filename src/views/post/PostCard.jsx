@@ -112,27 +112,8 @@ const PostCard = ({ post, isFeed = false, imgClass = "" }) => {
         }
     };
 
-    // const handleDelete = () => {
-    //     setMenuOpen(false);
-    //     if (window.confirm("Are you sure you want to delete this post?")) {
-    //         dispatch(deletePost(post.id));
-    //     }
-    // };
-
-    // const handleLike = async () => {
-    //     try {
-    //         const res = await dispatch(toggleLike(post.id));
-    //         if (res.payload) {
-    //             setLiked(res.payload.likedByMe);
-    //             setLikesCount(res.payload.likesCount);
-    //         }
-    //     } catch (err) {
-    //         console.error(err);
-    //     }
-    // };
-
     const handleLike = async () => {
-        if (!post?.id) return; // safeguard
+        if (!post?.id) return; 
         try {
             const res = await dispatch(toggleLike(post.id));
             if (res.payload) {
@@ -144,19 +125,8 @@ const PostCard = ({ post, isFeed = false, imgClass = "" }) => {
         }
     };
 
-    // const handleShowLikes = async () => {
-    //     try {
-    //         const res = await dispatch(getPostLikes(post.id)).unwrap();
-    //         setLikedUsers(res.users || []);
-    //         setShowLikesModal(true);
-    //     } catch (err) {
-    //         console.error("Failed to fetch likes:", err);
-    //     }
-    // };
-
-
     const handleShowLikes = async () => {
-        if (!post?.id) return; // safeguard
+        if (!post?.id) return; 
         try {
             const res = await dispatch(getPostLikes(post.id)).unwrap();
             setLikedUsers(res.users || []);
@@ -166,22 +136,6 @@ const PostCard = ({ post, isFeed = false, imgClass = "" }) => {
         }
     };
 
-    // const handleAddComment = () => {
-    //     if (commentText.trim()) {
-    //         dispatch(createComment({ postId: post.id, text: commentText }))
-    //             .then(() => dispatch(getPostComments(post.id)));
-    //         setCommentText("");
-    //     }
-    // };
-
-    // const handleAddComment = () => {
-    //     if (!post?.id) return; // safeguard
-    //     if (commentText.trim()) {
-    //         dispatch(createComment({ postId: post.id, text: commentText }))
-    //             .then(() => dispatch(getPostComments(post.id)));
-    //         setCommentText("");
-    //     }
-    // };
 
     const handleAddComment = () => {
         if (!post?.id || !commentText.trim()) return;
@@ -189,17 +143,6 @@ const PostCard = ({ post, isFeed = false, imgClass = "" }) => {
             .then(() => setCommentText(""));
     };
 
-    // const handleUpdateComment = (commentId) => {
-    //     if (editingText.trim()) {
-    //         dispatch(updateComment({ commentId, text: editingText }))
-    //             .unwrap()
-    //             .then(() => {
-    //                 setEditingCommentId(null);
-    //                 setEditingText("");
-    //             })
-    //             .catch((err) => console.error("Failed to update:", err));
-    //     }
-    // };
 
     const handleUpdateComment = (commentId) => {
         if (!editingText.trim() || !post?.id) return;
@@ -211,17 +154,6 @@ const PostCard = ({ post, isFeed = false, imgClass = "" }) => {
             })
             .catch((err) => console.error("Failed to update:", err));
     };
-
-    // const handleDeleteComment = (commentId) => {
-    //     dispatch(deleteComment(commentId))
-    //         .then(() => dispatch(getPostComments(post.id)));
-    // };
-
-    // const handleDeleteComment = (commentId) => {
-    //     if (!post?.id) return;
-    //     dispatch(deleteComment({ commentId, postId: post.id }))
-    //         .then(() => dispatch(getPostComments(post.id)));
-    // };
 
     const handleDeleteComment = (commentId) => {
         if (!post?.id) return;
@@ -470,32 +402,6 @@ const PostCard = ({ post, isFeed = false, imgClass = "" }) => {
             </Dialog>
 
 
-            {/* {!isFeed && (
-                <div className="absolute top-1 right-1">
-                    <HiDotsVertical
-                        className="cursor-pointer text-white bg-black/50 rounded-full p-1"
-                        size={20}
-                        onClick={() => setMenuOpen((prev) => !prev)}
-                    />
-                    {menuOpen && (
-                        <div className="absolute right-0 mt-2 w-28 bg-white shadow-md rounded text-sm z-10">
-                            <button
-                                className="w-full text-left px-3 py-2 hover:bg-gray-100 cursor-pointer"
-                                onClick={handleUpdateClick}
-                            >
-                                Update
-                            </button>
-                            <button
-                                className="w-full text-left px-3 py-2 hover:bg-gray-100 text-red-600 cursor-pointer"
-                                onClick={handleDelete}
-                            >
-                                Delete
-                            </button>
-                        </div>
-                    )}
-                </div>
-            )} */}
-
             {!isFeed && (
                 <div className="absolute top-1 right-1">
                     <HiDotsVertical
@@ -561,7 +467,7 @@ const PostCard = ({ post, isFeed = false, imgClass = "" }) => {
                             className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-4xl right-4 font-bold"
                             onClick={() => setShowEditModal(false)}
                         >
-                            ×
+                            x
                         </button>
 
                         <Dialog.Title className="font-semibold text-lg mb-4">

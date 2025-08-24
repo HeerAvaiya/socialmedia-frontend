@@ -4,7 +4,9 @@ import {
   registerAction,
   forgotPasswordAction,
   resetPasswordAction,
+  logoutAction
 } from "../actions/auth.action";
+
 
 let user = null;
 try {
@@ -15,6 +17,7 @@ try {
   localStorage.removeItem("user");
 }
 
+
 const initialState = {
   token: localStorage.getItem("token") || null,
   user,
@@ -22,6 +25,7 @@ const initialState = {
   error: null,
   message: null,
 };
+
 
 const authSlice = createSlice({
   name: "auth",
@@ -35,18 +39,13 @@ const authSlice = createSlice({
       state.message = null;
       state.profileImageUrl = null;
     },
-    logout: (state) => {
-      state.user = null;
-      state.token = null;
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      localStorage.removeItem("profileImageUrl");
-    },
     clearErrorAndMessage: (state) => {
       state.error = null;
       state.message = null;
     },
   },
+
+
   extraReducers: (builder) => {
     builder
       // Login
@@ -58,14 +57,13 @@ const authSlice = createSlice({
         state.loading = false;
         state.user = action.payload.user;
         state.token = action.payload.tokens.accessToken;
-        localStorage.setItem("token", action.payload.tokens.accessToken);
-        localStorage.setItem("user", JSON.stringify(action.payload.user));
         state.message = "Login successful";
       })
       .addCase(loginAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message || "Login failed";
       })
+
 
       // Register
       .addCase(registerAction.pending, (state) => {
@@ -83,6 +81,8 @@ const authSlice = createSlice({
         state.error = action.payload?.message || "Registration failed";
       })
 
+
+      // forgotPasswordAction
       .addCase(forgotPasswordAction.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -97,6 +97,8 @@ const authSlice = createSlice({
         state.error = action.payload;
       })
 
+
+      // resetPasswordAction
       .addCase(resetPasswordAction.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -109,9 +111,24 @@ const authSlice = createSlice({
       .addCase(resetPasswordAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+
+
+      //logout
+      .addCase(logoutAction.fulfilled, (state) => {
+        state.user = null;
+        state.token = null;
+        state.profileImageUrl = null;
+        state.loading = false;
+        state.error = null;
+        state.message = null;
+      })
+      .addCase(logoutAction.rejected, (state, action) => {
+        state.error = action.payload || "Logout failed";
       });
   },
 });
 
-export const { clearAuthState, logout , clearErrorAndMessage } = authSlice.actions;
+export const { clearAuthState, logout, clearErrorAndMessage } = authSlice.actions;
+
 export default authSlice.reducer;          

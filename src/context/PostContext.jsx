@@ -5,7 +5,11 @@ const PostContext = createContext();
 
 export const PostProvider = ({ children }) => {
   const posts = useSelector((state) => state.post);
-  return <PostContext.Provider value={posts}>{children}</PostContext.Provider>;
+  return (
+    <PostContext.Provider value={posts}>
+      {children}
+    </PostContext.Provider>
+    );
 };
 
 export const usePosts = () => useContext(PostContext);

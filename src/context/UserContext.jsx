@@ -5,7 +5,11 @@ const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const user = useSelector((state) => state.user.user);
-  return <UserContext.Provider value={user}>{children}</UserContext.Provider>;
+  return (
+    <UserContext.Provider value={user}>
+      {children}
+    </UserContext.Provider>
+  );
 };
 
 export const useUser = () => useContext(UserContext);
